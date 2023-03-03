@@ -3,18 +3,16 @@
     "name": "(02)",
     "drill": "",
     "description": "",
-    "frames": [
-
-        {
-            "type": "calc",
+    "frames": [{
+            "type": "action",
             "divs": [{
-                "color": "yellow",
-                "value": "20+14"
-            }],
-            "duration": 2
+                    "color": "blue",
+                    "icon": "shot"
+                }
+
+            ],
+            "duration": 5
         },
-
-
         {
             "type": "action",
             "divs": [{
@@ -26,9 +24,50 @@
                     "icon": "stick"
                 }
             ],
-            "duration": 2
+            "duration": 5
         },
-
+        [{
+            "type": "action",
+            "divs": [{
+                "color": "red",
+                "icon": "control"
+            }],
+            "duration": 5
+        }, {
+            "type": "action",
+            "divs": [{
+                "color": "green",
+                "icon": "stick"
+            }],
+            "duration": 5
+        }, {
+            "type": "action",
+            "divs": [{
+                "color": "blue",
+                "icon": "stick"
+            }],
+            "duration": 5
+        }, {
+            "type": "action",
+            "divs": [{
+                "color": "yellow",
+                "icon": "pass"
+            }],
+            "duration": 5
+        }],
+        {
+            "type": "calc",
+            "color": "green",
+            "value": "20+14",
+            "duration": 2
+        }, {
+            "type": "action",
+            "divs": [{
+                "color": "green",
+                "icon": "shot"
+            }],
+            "duration": 5
+        },
         {
             "type": "action",
             "divs": [{
@@ -37,56 +76,47 @@
                 }
 
             ],
-            "duration": 2
+            "duration": 5
         },
-
-
         {
+            "type": "counter",
+            "value": "5",
+            "duration": 5
+        },
+        {
+            "type": "counter",
+            "value": "20",
+            "duration": 20
+        }, {
             "type": "action",
             "divs": [{
-                    "color": "green",
+                    "color": "yellow",
                     "icon": "change"
                 }
 
             ],
-            "duration": 2
+            "duration": 5
         },
-
-
 
         {
             "type": "action",
             "divs": [{
-                    "color": "green",
-                    "icon": "stick"
-                }, {
-                    "color": "blue",
-                    "icon": "shot"
-                }, {
                     "color": "red",
                     "icon": "run"
                 }
 
             ],
-            "duration": 2
+            "duration": 5
         },
-
-
         {
             "type": "action",
             "divs": [{
-                "color": "blue",
-                "icon": "shot"
-            }],
-            "duration": 2
-        },
-        {
-            "type": "counter",
-            "divs": [{
-                "color": "red",
-                "value": "20"
-            }],
-            "duration": 20
+                    "color": "blue",
+                    "icon": "pass"
+                }
+
+            ],
+            "duration": 5
         }
 
     ]
