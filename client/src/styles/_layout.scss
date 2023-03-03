@@ -1,0 +1,17 @@
+@import 'media';
+#app {
+    min-height: 100vh;
+    height: 100%;
+    width: 100%;
+    background: var(--app-color);
+}
+
+.wrapper {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    .with-scroll {
+        overflow-x: auto;
+    }
+}
