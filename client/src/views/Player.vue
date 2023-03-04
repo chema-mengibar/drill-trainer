@@ -7,6 +7,8 @@ import IconShoot from "../components/action-icons/icon-shoot.vue";
 import IconStick from "../components/action-icons/icon-stick-handling.vue";
 import IconStop from "../components/action-icons/icon-stop-control.vue";
 import IconBack from "../components/action-icons/icon-back.vue";
+import IconAvoid from "../components/action-icons/icon-avoid.vue";
+import Spinner from "../components/spinner.vue";
 import { isProxy, toRaw } from "vue";
 
 export default {
@@ -17,12 +19,12 @@ export default {
     s: undefined,
     cursor: 0,
     timer: 0,
-    intervalid: 0,
+    intervalFlowId: 0,
     intervalInit: 0,
-    countdown: 5,
-    countdownDefault: 5,
+    countdown: 10,
+    countdownDefault: 10,
     flow: 'ready',
-    useCountdown: false
+    useCountdown: true
   }),
   methods: {
     player: function(){
@@ -58,37 +60,42 @@ export default {
             this.countdown--;
             if (this.countdown <= 0) {
               clearInterval(this.intervalInit);
-              this.flow = "running"
               this.play();
             }
           }, 1000);
       }else{
-        this.flow = "running"
+
         this.play();
       }
     },
     next: function () {
-      this.cursor++;
-      this.play();
+      if(this.cursor < this.s.frames.length - 1){
+        this.cursor++;
+      }
+      else{
+        this.flow = 'ready'
+        clearInterval(this.intervalFlowId);
+      }
     },
     play: function () {
       this.flow = 'running'
-      clearInterval(this.intervalid);
+      clearInterval(this.intervalFlowId);
       const currentFrame = toRaw(this.currentFrame);
       if (currentFrame) {
-        this.intervalid = setInterval(() => {
+        this.intervalFlowId = setInterval(() => {
           this.next();
         }, currentFrame.duration * 1000);
       }
     },
     staticNext: function () {
-      clearInterval(this.intervalid);
+      clearInterval(this.intervalFlowId);
       this.flow = 'paused'
-      this.cursor++;
-      console.log('NEXT', toRaw(this.currentFrame))
+       if(this.cursor < this.s.frames.length - 1){
+        this.cursor++;
+      }
     },
     staticPrev: function () {
-      clearInterval(this.intervalid);
+      clearInterval(this.intervalFlowId);
        this.flow = 'paused'
       if(this.cursor < 1  ){
         return
@@ -97,7 +104,7 @@ export default {
     },
     pause: function () {
       this.flow = 'paused'
-      clearInterval(this.intervalid);
+      clearInterval(this.intervalFlowId);
      }
   },
   created() {
@@ -105,9 +112,8 @@ export default {
   },
   mounted() {
     const seqId = this.$route.query.id;
-    console.log(">>>", seqId);
     this.s = this.$services.toolService.getSequenceById(seqId);
-    console.log(">>>", this.s);
+    console.log("[Player] mounted:", seqId, toRaw(this.s));
     this.cursor = 0;
     //this.fullScreen()
   },
@@ -122,15 +128,8 @@ export default {
               Math.floor(Math.random() * (max - min + 1)) + min;
             return this.s.frames[this.cursor][selectedIdx];
           }
-          return this.s.frames[this.cursor];
-
-        } else {
-          this.flow = 'ready'
-          this.cursor--;
-          clearInterval(this.intervalid);
-          return this.s.frames[this.cursor ];
-         
-        }
+        } 
+        return this.s.frames[this.cursor];
       }
       return null;
     },
@@ -144,6 +143,8 @@ export default {
     IconChangeDirection,
     IconStop,
     IconBack,
+    IconAvoid,
+    Spinner
   },
 };
 </script>
@@ -151,11 +152,18 @@ export default {
 <style  lang="scss">
 @import "../styles/media";
 
+
+.flow{
+  display: flex;
+  align-items:center;
+  gap: 10px;
+}
+
 .countdown {
   position: absolute;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 1);
   color: white;
   text-align: center;
   line-height: 100vh;
@@ -185,6 +193,7 @@ export default {
       color: rgba(0,0,0, 0.5);
       font-weight: 700;
       border: 1px dotted rgba(255,255,255, .7);
+      cursor:pointer;
     }
 
     .header_back-button {
@@ -316,8 +325,11 @@ export default {
       <div class="display_header">
         <div class="header_back-button button" @click="back">B</div>
         <div v-if="s" class="header_info">
-          <div>{{this.flow}}</div>
-          <div>{{cursor+1}} of {{s.frames.length}}</div>
+          <div class="flow">
+            {{this.flow}} 
+            <Spinner v-if="flow == 'running'" />  
+          </div>
+          <div>({{cursor}}) {{cursor+1}} of {{s.frames.length}}</div>
           <div>dur. {{currentFrame.duration}}</div>
             
         </div>
@@ -349,6 +361,7 @@ export default {
           h="100%"
         />
         <IconRun v-if="currentFrame && div.icon === 'run'" w="100%" h="100%" />
+        <IconAvoid v-if="currentFrame && div.icon === 'avoid'" w="100%" h="100%" />
         <IconPass
           v-if="currentFrame && div.icon === 'pass'"
           w="100%"

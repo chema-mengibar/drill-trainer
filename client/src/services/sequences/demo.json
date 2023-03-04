@@ -1,9 +1,24 @@
 {
-    "id": "seq02",
-    "name": "(02)",
+    "id": "demo",
+    "name": "Demo",
     "drill": "",
     "description": "",
-    "frames": [{
+    "frames": [
+
+        {
+            "type": "action",
+            "divs": [{
+                    "color": "blue",
+                    "icon": "pass"
+                }, {
+                    "color": "red",
+                    "icon": "avoid"
+                }
+
+            ],
+            "duration": 5
+        },
+        {
             "type": "action",
             "divs": [{
                     "color": "blue",

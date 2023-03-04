@@ -1,0 +1,53 @@
+{
+    "id": "seq01",
+    "name": "Breakout pass",
+    "drill": "assets/drills/drill-01.png",
+    "description": "",
+    "frames": [
+        [{
+                "type": "action",
+                "divs": [{
+                    "color": "red",
+                    "icon": "stick"
+                }, {
+                    "color": "blue",
+                    "icon": "avoid"
+                }],
+                "duration": 5
+            },
+            {
+                "type": "action",
+                "divs": [{
+                    "color": "red",
+                    "icon": "stick"
+                }],
+                "duration": 5
+            }
+        ],
+        [{
+                "type": "action",
+                "divs": [{
+                    "color": "yellow",
+                    "icon": "pass"
+                }],
+                "duration": 5
+            },
+            {
+                "type": "action",
+                "divs": [{
+                    "color": "green",
+                    "icon": "pass"
+                }],
+                "duration": 5
+            },
+            {
+                "type": "action",
+                "divs": [{
+                    "color": "blue",
+                    "icon": "pass"
+                }],
+                "duration": 5
+            }
+        ]
+    ]
+}
