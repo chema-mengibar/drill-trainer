@@ -61,7 +61,7 @@ export default {
 
 <style  lang="scss">
 @import "../styles/media";
-
+@import "../styles/cards";
 
 .drill-container{
   width: 100vw;
@@ -141,80 +141,32 @@ export default {
 
 
 .mini-action {
-
-  color: white;
   height: 100px;
   width: 190px;
-
-  &.black {
-    background-color: black;
-    color: white;
-  }
-
-  &.yellow {
-    background-color: var(--c-yellow);
-    color: black;
-  }
-
-  &.blue {
-    background-color: var(--c-blue);
-    color: white;
-  }
-
-  &.green {
-    background-color: var(--c-green);
-    color: black;
-  }
-
-  &.red {
-    background-color: var(--c-red);
-    color: white;
-  }
+  @include action-colors;
 }
 
 .mini-counter {
   font-family: var(--font-num);
   min-height: 100px;
-  color: black;
-  background-color: white;
   font-size: 50px;
   text-align: center;
   font-weight: 400;
   line-height: 100px;
   flex: 1;
+  @include counter-colors ;
 }
 
 .mini-calc {
   min-height: 100px;
   font-family: var(--font-num);
-  background-color: black;
   text-align: center;
   font-weight: 400;
   line-height: 100px;
   font-size: 50px;
   letter-spacing: 10px;
   flex: 1;
-
-  &.yellow {
-    background-color: var(--c-yellow);
-    color: black;
-  }
-
-  &.blue {
-    background-color: var(--c-blue);
-    color: white;
-  }
-
-  &.green {
-    background-color: var(--c-green);
-    color: black;
-  }
-
-  &.red {
-    background-color: var(--c-red);
-    color: white;
-
-  }
+  @include calc-colors;
 }
 
 .size-2{

@@ -1,0 +1,48 @@
+@mixin action-colors {
+    color: white;
+    &.black {
+        background-color: black;
+        color: white;
+    }
+    &.yellow {
+        background-color: var(--c-yellow);
+        color: black;
+    }
+    &.blue {
+        background-color: var(--c-blue);
+        color: white;
+    }
+    &.green {
+        background-color: var(--c-green);
+        color: black;
+    }
+    &.red {
+        background-color: var(--c-red);
+        color: white;
+    }
+}
+
+@mixin calc-colors {
+    background-color: black;
+    &.yellow {
+        background-color: var(--c-yellow);
+        color: black;
+    }
+    &.blue {
+        background-color: var(--c-blue);
+        color: white;
+    }
+    &.green {
+        background-color: var(--c-green);
+        color: black;
+    }
+    &.red {
+        background-color: var(--c-red);
+        color: white;
+    }
+}
+
+@mixin counter-colors {
+    color: black;
+    background-color: white;
+}

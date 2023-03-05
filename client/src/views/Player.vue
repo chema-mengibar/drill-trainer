@@ -24,7 +24,8 @@ export default {
     countdown: 10,
     countdownDefault: 10,
     flow: 'ready',
-    useCountdown: true
+    useCountdown: false,
+    event: null
   }),
   methods: {
     player: function(){
@@ -105,17 +106,22 @@ export default {
     pause: function () {
       this.flow = 'paused'
       clearInterval(this.intervalFlowId);
-     }
+    },
   },
   created() {
     this.t = this.$services.localeService.D();
   },
   mounted() {
+
+    const _ = this;
     const seqId = this.$route.query.id;
     this.s = this.$services.toolService.getSequenceById(seqId);
     console.log("[Player] mounted:", seqId, toRaw(this.s));
     this.cursor = 0;
     //this.fullScreen()
+    document.addEventListener("keypress", function(event) {
+      _.event = event.key; // keyCode
+    });
   },
   computed: {
     currentFrame() {
@@ -151,6 +157,7 @@ export default {
 
 <style  lang="scss">
 @import "../styles/media";
+@import "../styles/cards";
 
 
 .flow{
@@ -242,78 +249,36 @@ export default {
 
 .action {
   height: 100vh;
-  color: white;
   flex: 1;
-
-  &.black {
-    background-color: black;
-    color: white;
-  }
-
-  &.yellow {
-    background-color: var(--c-yellow);
-    color: black;
-  }
-
-  &.blue {
-    background-color: var(--c-blue);
-    color: white;
-  }
-
-  &.green {
-    background-color: var(--c-green);
-    color: black;
-  }
-
-  &.red {
-    background-color: var(--c-red);
-    color: white;
-  }
+  @include action-colors;
 }
 
 .counter {
   font-family: var(--font-num);
   height: 100vh;
-  color: black;
-  background-color: white;
   font-size: 100vh;
   text-align: center;
   font-weight: 400;
   line-height: 100vh;
   flex: 1;
+  @include counter-colors ;
 }
 
 .calc {
   height: 100vh;
   font-family: var(--font-num);
-  background-color: black;
   text-align: center;
   font-weight: 400;
   line-height: 100vh;
   font-size: 250px;
   letter-spacing: 10px;
   flex: 1;
+  @include calc-colors;
+}
 
-  &.yellow {
-    background-color: var(--c-yellow);
-    color: black;
-  }
 
-  &.blue {
-    background-color: var(--c-blue);
-    color: white;
-  }
-
-  &.green {
-    background-color: var(--c-green);
-    color: black;
-  }
-
-  &.red {
-    background-color: var(--c-red);
-    color: white;
-
-  }
+video{
+  display:none;
 }
 </style>
 
@@ -329,6 +294,7 @@ export default {
             {{this.flow}} 
             <Spinner v-if="flow == 'running'" />  
           </div>
+          <div>event: {{event}} | </div>
           <div>({{cursor}}) {{cursor+1}} of {{s.frames.length}}</div>
           <div>dur. {{currentFrame.duration}}</div>
             
