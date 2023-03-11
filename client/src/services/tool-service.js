@@ -1,26 +1,66 @@
-import Seq01 from './sequences/seq-01.json'
-import Seq02 from './sequences/seq-02.json'
-import Seq03 from './sequences/seq-03.json'
-import Seq04 from './sequences/seq-04.json'
-
-import Demo from './sequences/demo.json'
-
 export default class ToolService {
+
+    domain = '//drill-trainer-server.motuo.info'
+
+    sequences = []
+    sequence = null
 
     constructor() {}
 
     sequences() {
-        return [
-            Demo,
-            Seq01,
-            Seq02,
-            Seq03,
-            Seq04,
-        ]
+        return this.sequences;
     }
 
     getSequenceById(id) {
         return this.sequences().find((item) => item.id == id)
+    }
+
+    getImagePath(fileName) {
+        return `${this.domain}/images/${fileName}`
+    }
+
+    async fetchSeqs() {
+        return fetch(`${this.domain}/sequences.php`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((res) => {
+                return res.json()
+            })
+            .then((jsonResponse) => {
+                if (jsonResponse.data) {
+                    this.sequences = jsonResponse.data;
+                    return this.sequences;
+                }
+            }, (error) => {
+                console.error('[ToolService] fetchSeqs:', error)
+            })
+    }
+
+
+
+    async fetchSeq(id) {
+        return fetch(`${this.domain}/sequence.php?id=${id}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then((res) => {
+                return res.json()
+            })
+            .then((jsonResponse) => {
+                if (jsonResponse.data) {
+                    this.sequence = jsonResponse.data
+                    return this.sequence;
+                }
+            }, (error) => {
+                console.error('[ToolService] fetchSeq:', error)
+            })
     }
 
 

@@ -1,7 +1,7 @@
 {
-    "id": "seq01",
+    "id": "seq-01",
     "name": "Breakout pass",
-    "drill": "assets/drills/drill-01.png",
+    "drill": "drill-01.png",
     "description": "",
     "frames": [
         [{

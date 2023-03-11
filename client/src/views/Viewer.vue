@@ -41,7 +41,12 @@ export default {
 
   mounted() {
     const seqId = this.$route.query.id;
-     this.s = this.$services.toolService.getSequenceById(seqId);
+
+     this.$services.toolService.fetchSeq(seqId).then((resp) => {
+      this.s = resp;
+    });
+
+     
   },
   computed: {
    
@@ -394,7 +399,7 @@ export default {
     </div>
 
      <div v-if="isShowDrill" class="drill-container">
-        <img :src="s.drill" />
+        <img :src="$services.toolService.getImagePath(s.drill)" />
         <div class="drill-info">
           {{s.id}}
           <br/>

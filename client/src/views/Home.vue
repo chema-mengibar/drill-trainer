@@ -4,8 +4,7 @@ export default {
   inject: ["$services"],
   data: () => ({
     t: {},
-    list: []
-   
+    list: [],
   }),
   methods: {},
   created() {
@@ -14,41 +13,38 @@ export default {
   },
   mounted() {
     document.body.style.overflow = "auto";
-
-    this.list = this.$services.toolService.sequences();
-
+    this.$services.toolService.fetchSeqs().then((resp) => {
+      this.list = resp;
+    });
   },
-  components: {
-
-  },
+  components: {},
 };
 </script>
 
 <style  lang="scss">
 @import "../styles/media";
 
-.collection{
-  display:flex;
+.collection {
+  display: flex;
   gap: 10px;
   padding: 20px;
   display: flex;
   flex-wrap: wrap;
-  
 }
 
-.thumbnail{
+.thumbnail {
   min-width: 150px;
   min-height: 180px;
   max-width: 25%;
   border: 1px solid grey;
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px 5px;
   box-sizing: border-box;
-  flex:1;
- 
+  flex: 1;
+
   &:link,
   &:visited,
   &:hover,
@@ -59,24 +55,23 @@ export default {
     font-size: 14px;
   }
 
-  img{
-    margin-top:10px;
+  img {
+    margin-top: 10px;
   }
-
 }
-
 </style>
 
 <template>
   <div class="wrapper with-scroll">
     <div class="collection">
-      <router-link 
-       :to="{ name: 'Player', query: { id: sequenceItem.id } }"
-        v-bind:key="sequenceItem.id" 
-        class="thumbnail" 
-        v-for="sequenceItem in list">
+      <router-link
+        :to="{ name: 'Player', query: { id: sequenceItem.id } }"
+        v-bind:key="sequenceItem.id"
+        class="thumbnail"
+        v-for="sequenceItem in list"
+      >
         {{ sequenceItem.name }}
-        <img :src="sequenceItem.drill" alt="" width="300" height="300" >
+        <img :src="$services.toolService.getImagePath(sequenceItem.drill)" alt="" width="300" height="300" />
       </router-link>
     </div>
   </div>

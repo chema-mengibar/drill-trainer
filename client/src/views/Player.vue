@@ -115,7 +115,11 @@ export default {
 
     const _ = this;
     const seqId = this.$route.query.id;
-    this.s = this.$services.toolService.getSequenceById(seqId);
+
+    this.$services.toolService.fetchSeq(seqId).then((resp) => {
+      this.s = resp;
+    });
+
     console.log("[Player] mounted:", seqId, toRaw(this.s));
     this.cursor = 0;
     //this.fullScreen()

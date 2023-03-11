@@ -1,10 +1,9 @@
 {
-    "id": "seq04",
+    "id": "seq-04",
     "name": "Break out pass",
-    "drill": "assets/drills/drill-04.png",
+    "drill": "drill-04.png",
     "description": "",
-    "frames": [
-        {
+    "frames": [{
             "type": "action",
             "divs": [{
                 "color": "red",
@@ -20,13 +19,12 @@
             }],
             "duration": 10
         },
-        [
-            {
+        [{
                 "type": "action",
                 "divs": [{
                     "color": "green",
                     "icon": "pass"
-                },{
+                }, {
                     "color": "red",
                     "icon": "avoid"
                 }],
@@ -55,7 +53,7 @@
                     "icon": "pass"
                 }],
                 "duration": 5
-            } 
+            }
         ]
     ]
 }
