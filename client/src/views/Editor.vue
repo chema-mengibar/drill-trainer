@@ -3,7 +3,7 @@ import SelectType from "../components/select-type.vue";
 import SelectColor from "../components/select-color.vue";
 import SelectAction from "../components/select-action.vue";
 import ButtonAccentBig from "../components/buttons/button-accent-big.vue";
-import { isProxy, toRaw } from 'vue';
+import { isProxy, toRaw } from "vue";
 
 export default {
   name: "FrameEditor",
@@ -21,39 +21,48 @@ export default {
     },
   }),
   methods: {
-
-    add: function(event){
+    add: function (event) {
       const position = event.target.getAttribute("data-position"); // before, after, last
       const frameIdx = event.target.getAttribute("data-frame-idx");
       const subFrameIdx = event.target.getAttribute("data-subframe-idx");
       const divIdx = event.target.getAttribute("data-div-idx");
 
-      console.log('>>>>>', position, frameIdx, subFrameIdx, divIdx)
+      console.log(">>>>>", position, frameIdx, subFrameIdx, divIdx);
 
-      if(position === 'before'  && frameIdx === null && subFrameIdx === null && divIdx === null){
+      if (
+        position === "before" &&
+        frameIdx === null &&
+        subFrameIdx === null &&
+        divIdx === null
+      ) {
         // add at first position of frames
-        console.log('add at 0 frame')
-      }
-      else if(position === 'after' && frameIdx !== null && subFrameIdx === null && divIdx === null){
-        // add at 
-        console.log('add at ')
+        console.log("add at 0 frame");
+      } else if (
+        position === "after" &&
+        frameIdx !== null &&
+        subFrameIdx === null &&
+        divIdx === null
+      ) {
+        // add at
+        console.log("add at ");
         const item = {
-           "type": "action",
-        "divs": [{
-            "color": "red",
-            "icon": "shot"
-        }],
-        "duration": 5
-        }
-        this.model.frames.splice(frameIdx, 0, item)
+          type: "action",
+          divs: [
+            {
+              color: "red",
+              icon: "shot",
+            },
+          ],
+          duration: 5,
+        };
+        this.model.frames.splice(frameIdx, 0, item);
       }
-
     },
 
     async submit() {
-      this.$emit('submit', this.model)
-      console.log(toRaw(this.model))
-    }
+      this.$emit("submit", this.model);
+      console.log(toRaw(this.model));
+    },
   },
 
   created() {
@@ -158,10 +167,10 @@ export default {
   }
 }
 
-button{
+button {
   background-color: black;
   color: white;
-  padding:20px;
+  padding: 20px;
   margin: 20px;
 }
 </style>
@@ -393,8 +402,6 @@ button{
           </div>
         </div>
       </div>
-
-      
     </form>
   </div>
 </template>
