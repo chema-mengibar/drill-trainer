@@ -1,8 +1,8 @@
 {
-    "id": "demo",
-    "name": "Demo",
+    "id": "demo-id",
+    "name": "Demo data Name",
     "drill": "",
-    "description": "",
+    "description": "Demo description",
     "frames": [
 
         {

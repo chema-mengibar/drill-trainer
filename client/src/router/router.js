@@ -21,19 +21,13 @@ const routes = [{
 
     },
     {
-        path: '/frame-editor',
-        name: 'FrameEditor',
+        path: '/editor',
+        name: 'Editor',
         component: () => (
-            import ('../views/FrameEditor.vue')),
+            import ('../views/Editor.vue')),
 
     },
-    {
-        path: '/sequence-editor',
-        name: 'SequenceEditor',
-        component: () => (
-            import ('../views/SequenceEditor.vue')),
 
-    },
 
 ];
 

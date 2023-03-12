@@ -1,3 +1,6 @@
+import DemoJson from './sequences/demo.json'
+
+
 export default class ToolService {
 
     domain = '//drill-trainer-server.motuo.info'
@@ -42,7 +45,12 @@ export default class ToolService {
 
 
 
-    async fetchSeq(id) {
+    async fetchSeq(id, useDemoData = false) {
+
+        if (useDemoData) {
+            return DemoJson
+        }
+
         return fetch(`${this.domain}/sequence.php?id=${id}`, {
                 method: 'GET',
                 headers: {
