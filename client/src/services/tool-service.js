@@ -46,7 +46,6 @@ export default class ToolService {
 
 
     async fetchSeq(id, useDemoData = false) {
-
         if (useDemoData) {
             return DemoJson
         }
@@ -68,6 +67,28 @@ export default class ToolService {
                 }
             }, (error) => {
                 console.error('[ToolService] fetchSeq:', error)
+            })
+    }
+
+
+    async saveSeq(data) {
+        console.log(data)
+        return fetch(`${this.domain}/save.php`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                },
+                body: JSON.stringify(data)
+            })
+            // .then((res) => {
+            //     return res.json()
+            // })
+            .then((jsonResponse) => {
+                console.log('RESP', jsonResponse)
+                return jsonResponse
+            }, (error) => {
+                console.error('[ToolService] saveSeq:', error)
             })
     }
 

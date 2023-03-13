@@ -60,8 +60,8 @@ export default {
     },
 
     async submit() {
-      this.$emit("submit", this.model);
-      console.log(toRaw(this.model));
+      console.log('>>>>>>>>>>>>>>>>>>>>>>')
+      this.$services.toolService.saveSeq(toRaw(this.model));
     },
   },
 
