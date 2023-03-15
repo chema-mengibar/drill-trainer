@@ -1,18 +1,28 @@
 import DemoJson from './sequences/demo.json'
-
+import { isProxy, reactive } from "vue";
 
 export default class ToolService {
 
     domain = '//drill-trainer-server.motuo.info'
 
     sequences = []
-    sequence = null
+    data = reactive({
+        sequence: null
+    })
+
+
 
     constructor() {}
 
     sequences() {
         return this.sequences;
     }
+
+    getSequence() {
+        return this.data.sequence;
+    }
+
+
 
     getSequenceById(id) {
         return this.sequences().find((item) => item.id == id)
@@ -43,8 +53,6 @@ export default class ToolService {
             })
     }
 
-
-
     async fetchSeq(id, useDemoData = false) {
         if (useDemoData) {
             return DemoJson
@@ -62,14 +70,30 @@ export default class ToolService {
             })
             .then((jsonResponse) => {
                 if (jsonResponse.data) {
-                    this.sequence = jsonResponse.data
-                    return this.sequence;
+                    this.data.sequence = jsonResponse.data
+                    this.map()
+                    return this.data.sequence;
                 }
             }, (error) => {
                 console.error('[ToolService] fetchSeq:', error)
             })
     }
 
+    map() {
+        const f = this.data.sequence.frames.map(f => {
+            f.id = crypto.randomUUID();
+            return f.map(g => {
+                g.id = crypto.randomUUID();
+                g.divs.map(h => {
+                    h.id = crypto.randomUUID();
+                    return h
+                })
+                return g;
+            })
+
+        });
+        this.data.sequence.frames = f;
+    }
 
     async saveSeq(data) {
         console.log(data)
@@ -92,5 +116,19 @@ export default class ToolService {
             })
     }
 
+    addFrameBefore() {
+        const item = [{
+            id: crypto.randomUUID(),
+            "type": "action",
+            "divs": [{
+                id: crypto.randomUUID(),
+                "color": "yellow",
+                "icon": "shot"
+            }],
+            "duration": 5
+        }];
+        this.data.sequence.frames.unshift(item);
+        this.map();
+    }
 
 }

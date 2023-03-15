@@ -5,7 +5,7 @@
     "description": "Demo description",
     "frames": [
 
-        {
+        [{
             "type": "action",
             "divs": [{
                     "color": "blue",
@@ -17,113 +17,7 @@
 
             ],
             "duration": 5
-        },
-        {
-            "type": "action",
-            "divs": [{
-                    "color": "blue",
-                    "icon": "shot"
-                }
-
-            ],
-            "duration": 5
-        },
-        {
-            "type": "action",
-            "divs": [{
-                    "color": "green",
-                    "icon": "stick"
-                },
-                {
-                    "color": "red",
-                    "icon": "stick"
-                }
-            ],
-            "duration": 5
-        },
-        [{
-            "type": "action",
-            "divs": [{
-                "color": "red",
-                "icon": "control"
-            }],
-            "duration": 5
         }, {
-            "type": "action",
-            "divs": [{
-                "color": "green",
-                "icon": "stick"
-            }],
-            "duration": 5
-        }, {
-            "type": "action",
-            "divs": [{
-                "color": "blue",
-                "icon": "stick"
-            }],
-            "duration": 5
-        }, {
-            "type": "action",
-            "divs": [{
-                "color": "yellow",
-                "icon": "pass"
-            }],
-            "duration": 5
-        }],
-        {
-            "type": "calc",
-            "color": "green",
-            "value": "20+14",
-            "duration": 2
-        }, {
-            "type": "action",
-            "divs": [{
-                "color": "green",
-                "icon": "shot"
-            }],
-            "duration": 5
-        },
-        {
-            "type": "action",
-            "divs": [{
-                    "color": "yellow",
-                    "icon": "back"
-                }
-
-            ],
-            "duration": 5
-        },
-        {
-            "type": "counter",
-            "value": "5",
-            "duration": 5
-        },
-        {
-            "type": "counter",
-            "value": "20",
-            "duration": 20
-        }, {
-            "type": "action",
-            "divs": [{
-                    "color": "yellow",
-                    "icon": "change"
-                }
-
-            ],
-            "duration": 5
-        },
-
-        {
-            "type": "action",
-            "divs": [{
-                    "color": "red",
-                    "icon": "run"
-                }
-
-            ],
-            "duration": 5
-        },
-        {
             "type": "action",
             "divs": [{
                     "color": "blue",
@@ -132,7 +26,18 @@
 
             ],
             "duration": 5
-        }
+        }],
+        [{
+            "type": "action",
+            "divs": [{
+                    "color": "green",
+                    "icon": "pass"
+                }
+
+            ],
+            "duration": 5
+        }]
+
 
     ]
 }

@@ -14,7 +14,7 @@ export default {
   data: () => ({
     t: {},
     s: undefined,
-    isShowDrill: false
+    isShowDrill: false,
   }),
   methods: {
     fullScreen: function () {
@@ -25,7 +25,10 @@ export default {
       }
     },
     back: function () {
-      this.$router.push({ path: '/player', query: { id: this.s.id } })
+      this.$router.push({ path: "/player", query: { id: this.s.id } });
+    },
+    edit: function () {
+      this.$router.push({ path: "/editor", query: { id: this.s.id } });
     },
     showDrill: function () {
       this.isShowDrill = true;
@@ -42,24 +45,20 @@ export default {
   mounted() {
     const seqId = this.$route.query.id;
 
-     this.$services.toolService.fetchSeq(seqId).then((resp) => {
+    this.$services.toolService.fetchSeq(seqId).then((resp) => {
       this.s = resp;
     });
-
-     
   },
-  computed: {
-   
-  },
+  computed: {},
   components: {
-        IconPass,
+    IconPass,
     IconRun,
     IconShoot,
     IconStick,
     IconChangeDirection,
     IconStop,
     IconBack,
-    IconAvoid
+    IconAvoid,
   },
 };
 </script>
@@ -68,82 +67,77 @@ export default {
 @import "../styles/media";
 @import "../styles/cards";
 
-.drill-container{
+.drill-container {
   width: 100vw;
   height: 100vh;
   position: absolute;
-  background-color: rgba(0,0,0,.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   padding: 10px;
-  justify-content:start;
+  justify-content: start;
 }
 
-.drill-info{
-  color:white;
-  margin-left:20px;
+.drill-info {
+  color: white;
+  margin-left: 20px;
 }
 
-.hiddeDrill{
+.hiddeDrill {
   display: flex;
   justify-content: center;
-  align-items:center;
+  align-items: center;
   font-size: 20px;
-  color: rgba(0,0,0, 0.5);
+  color: rgba(0, 0, 0, 0.5);
   font-weight: 700;
-  border: 1px dotted rgba(255,255,255, .7);
-  height:50px;
+  border: 1px dotted rgba(255, 255, 255, 0.7);
+  height: 50px;
   width: 50px;
-  color:white;
-  cursor:pointer;
+  color: white;
+  cursor: pointer;
   margin-left: auto;
 }
 
-.viewer{
+.viewer {
   position: relative;
-  background-color:#bfbfbf;
+  background-color: #bfbfbf;
 }
 
-.carrousel{
+.carrousel {
   width: 90%;
   height: 100vh;
   overflow-x: scroll;
   display: flex;
   gap: 10px;
-  top:10px;
+  top: 10px;
   left: 0;
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  position:absolute;
+  position: absolute;
   align-items: center;
 }
 
-.diapo{
+.diapo {
   width: 190px;
   height: 100px;
   display: flex;
   flex-direction: row;
-  position:relative;
+  position: relative;
 
-  &.asColum{
+  &.asColum {
     flex-wrap: wrap;
     //flex-direction: column;
-    height:auto;
-
-  
+    height: auto;
   }
 }
 
-
-
-.diapo-info{
-  position:absolute;
+.diapo-info {
+  position: absolute;
   font-size: 14px;
-  background-color: rgba(0,0,0,.5);
+  background-color: rgba(0, 0, 0, 0.5);
   color: white;
-  padding:5px;
+  padding: 5px;
 }
-
 
 .mini-action {
   height: 100px;
@@ -159,7 +153,7 @@ export default {
   font-weight: 400;
   line-height: 100px;
   flex: 1;
-  @include counter-colors ;
+  @include counter-colors;
 }
 
 .mini-calc {
@@ -174,13 +168,14 @@ export default {
   @include calc-colors;
 }
 
-.size-2{
+.size-2 {
   width: calc(190px / 2);
+  margin-bottom: 5px;
 }
 
-.size-1{
+.size-1 {
   width: 190px;
-  margin: 10px 0;
+  margin-bottom: 5px;
 }
 
 .display {
@@ -192,195 +187,123 @@ export default {
   flex-direction: column;
 
   .display_header {
-    display:flex;
+    display: flex;
     height: 50px;
-    gap:5px;
+    gap: 5px;
 
-    .button{
+    .button {
       display: flex;
       justify-content: center;
-      align-items:center;
+      align-items: center;
       font-size: 20px;
-      color: rgba(0,0,0, 0.5);
+      color: rgba(0, 0, 0, 0.5);
       font-weight: 700;
-      border: 1px dotted rgba(255,255,255, .7);
-      cursor:pointer;
+      border: 1px dotted rgba(255, 255, 255, 0.7);
+      cursor: pointer;
     }
 
     .header_back-button {
-      height:100%;
+      height: 100%;
       width: 7%;
     }
     .header_info {
-      flex:1;
-      display: flex;;
-       justify-content: space-between;
-      align-items:center;
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       padding: 0 20px;
-
     }
     .header_view-button {
-     width: 7%;
+      width: 7%;
     }
   }
-
 }
 </style>
 
 <template>
   <div class="viewer wrapper">
+    <template v-if="s">
+      <div class="carrousel">
+        <div
+          class="diapo"
+          :class="{ asColum: currentFrame.length > 1 }"
+          v-bind:key="`${currentFrame.type}_${index}`"
+          v-for="(currentFrame, index) in s.frames"
+        >
+          <div class="diapo-info">{{ currentFrame[0].duration }} seg.</div>
 
-   
-    <template v-if="s" >
-      <div class="carrousel" >
+            <template v-for="(frame, index) in currentFrame">
+              <!-- start -->
+              <template v-if="frame && frame.type === 'action'">
+                <div
+                  class="mini-action"
+                  v-bind:key="`${div.color}_${index}`"
+                  v-for="(div, index) in frame.divs"
+                  :class="`${div.color} size-${frame.divs.length}`"
+                >
+                  <IconChangeDirection
+                    v-if="frame && div.icon === 'change'"
+                    w="100%"
+                    h="100%"
+                  />
+                  <IconShoot
+                    v-if="frame && div.icon === 'shot'"
+                    w="100%"
+                    h="100%"
+                  />
+                  <IconRun
+                    v-if="frame && div.icon === 'run'"
+                    w="100%"
+                    h="100%"
+                  />
+                  <IconAvoid
+                    v-if="currentFrame && div.icon === 'avoid'"
+                    w="100%"
+                    h="100%"
+                  />
+                  <IconPass
+                    v-if="frame && div.icon === 'pass'"
+                    w="100%"
+                    h="100%"
+                  />
+                  <IconStick
+                    v-if="frame && div.icon === 'stick'"
+                    w="100%"
+                    h="100%"
+                  />
+                  <IconStop
+                    v-if="frame && div.icon === 'control'"
+                    w="100%"
+                    h="100%"
+                  />
+                  <IconBack
+                    v-if="frame && div.icon === 'back'"
+                    w="100%"
+                    h="100%"
+                  />
+                </div>
+              </template>
 
-        <div class="diapo" :class="{asColum: Array.isArray(currentFrame)}" v-bind:key="`${currentFrame.type}_${index}`"  
-        v-for="(currentFrame, index) in s.frames">
-
-          <div class="diapo-info">{{ Array.isArray(currentFrame) ? currentFrame[0].duration : currentFrame.duration}} seg.</div>
-
-          <template v-if="Array.isArray(currentFrame)">
-            <template  v-for="(frame, index) in currentFrame">
-            
-<!-- start -->
-<template v-if="frame && frame.type === 'action'">
               <div
-                class="mini-action"
-                v-bind:key="`${div.color}_${index}`"
-                v-for="(div, index) in frame.divs"
-                :class="`${div.color} size-${frame.divs.length}`"
+                class="mini-counter"
+                v-bind:key="`${frame.color}_${index}`"
+                v-if="frame && frame.type === 'counter'"
+                :class="`size-${frame.divs.length}`"
               >
-              <IconChangeDirection
-                v-if="frame && div.icon === 'change'"
-                w="100%"
-                h="100%"
-              />
-              <IconShoot
-                v-if="frame && div.icon === 'shot'"
-                w="100%"
-                h="100%"
-              />
-              <IconRun v-if="frame && div.icon === 'run'" w="100%" h="100%" />
-               <IconAvoid v-if="currentFrame && div.icon === 'avoid'" w="100%" h="100%" />
-              <IconPass
-                v-if="frame && div.icon === 'pass'"
-                w="100%"
-                h="100%"
-              />
-              <IconStick
-                v-if="frame && div.icon === 'stick'"
-                w="100%"
-                h="100%"
-              />
-              <IconStop
-                v-if="frame && div.icon === 'control'"
-                w="100%"
-                h="100%"
-              />
-              <IconBack
-                v-if="frame && div.icon === 'back'"
-                w="100%"
-                h="100%"
-              />
-            </div>
-          </template>
+                {{ frame.value }}
+              </div>
 
-          <div
-            class="mini-counter"
-            v-bind:key="`${frame.color}_${index}`"
-            v-if="frame && frame.type === 'counter'"
-            :class="`size-${frame.divs.length}`"
-          >
-            {{ frame.value }}
-          </div>
+              <div
+                class="mini-calc"
+                :class="`${frame.color} size-${frame.divs.length}`"
+                v-bind:key="`${frame.color}_${index}`"
+                v-if="frame && frame.type === 'calc'"
+              >
+                {{ frame.value }}
+              </div>
 
-          <div
-            class="mini-calc"
-  
-            :class="`${frame.color} size-${frame.divs.length}`"
-            v-bind:key="`${frame.color}_${index}`"
-            v-if="frame && frame.type === 'calc'"
-          >
-            {{ frame.value }}
-          </div>
-
-
-
-
-            <!--  end -->
+              <!--  end -->
             </template>
-          </template>
-
-
-          <template v-if="!Array.isArray(currentFrame)">
-
-    
-            <template v-if="currentFrame && currentFrame.type === 'action'">
-              <div
-                class="mini-action"
-                v-bind:key="`${div.color}_${index}`"
-                v-for="(div, index) in currentFrame.divs"
-                :class="`${div.color}`"
-              >
-              <IconChangeDirection
-                v-if="currentFrame && div.icon === 'change'"
-                w="100%"
-                h="100%"
-              />
-              <IconShoot
-                v-if="currentFrame && div.icon === 'shot'"
-                w="100%"
-                h="100%"
-              />
-              <IconRun v-if="currentFrame && div.icon === 'run'" w="100%" h="100%" />
-                             <IconAvoid v-if="currentFrame && div.icon === 'avoid'" w="100%" h="100%" />
-
-              <IconPass
-                v-if="currentFrame && div.icon === 'pass'"
-                w="100%"
-                h="100%"
-              />
-              <IconStick
-                v-if="currentFrame && div.icon === 'stick'"
-                w="100%"
-                h="100%"
-              />
-              <IconStop
-                v-if="currentFrame && div.icon === 'control'"
-                w="100%"
-                h="100%"
-              />
-              <IconBack
-                v-if="currentFrame && div.icon === 'back'"
-                w="100%"
-                h="100%"
-              />
-            </div>
-          </template>
-
-          <div
-            class="mini-counter"
-            v-if="currentFrame && currentFrame.type === 'counter'"
-          >
-            {{ currentFrame.value }}
-          </div>
-
-          <div
-            class="mini-calc"
-            :class="currentFrame.color"
-            v-if="currentFrame && currentFrame.type === 'calc'"
-          >
-            {{ currentFrame.value }}
-          </div>
-
-          
-          </template>
-
-
-
-
-        
-          
 
 
 
@@ -388,28 +311,24 @@ export default {
       </div>
     </template>
 
-   
-
-     <div class="display">
+    <div class="display">
       <div class="display_header">
         <div class="header_back-button button" @click="back">B</div>
-        <div class="header_view-button button"  @click="fullScreen">F</div>
-        <div class="header_view-button button"  @click="showDrill">Drill</div>
+        <div class="header_view-button button" @click="fullScreen">F</div>
+        <div class="header_view-button button" @click="edit">E</div>
+        <div class="header_view-button button" @click="showDrill">Drill</div>
       </div>
     </div>
 
-     <div v-if="isShowDrill" class="drill-container">
-        <img :src="$services.toolService.getImagePath(s.drill)" />
-        <div class="drill-info">
-          {{s.id}}
-          <br/>
-          <h1>{{s.name}}</h1>
-          <p>{{s.description}}</p>
-        
-        </div>
-        <div class="hiddeDrill" @click="hiddeDrill">X</div>
-
+    <div v-if="isShowDrill" class="drill-container">
+      <img :src="$services.toolService.getImagePath(s.drill)" />
+      <div class="drill-info">
+        {{ s.id }}
+        <br />
+        <h1>{{ s.name }}</h1>
+        <p>{{ s.description }}</p>
+      </div>
+      <div class="hiddeDrill" @click="hiddeDrill">X</div>
     </div>
-
   </div>
 </template>

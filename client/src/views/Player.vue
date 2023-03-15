@@ -52,6 +52,9 @@ export default {
     viewer: function () {
       this.$router.push({ path: '/viewer', query: { id: this.s.id } })
     },
+    edit: function () {
+      this.$router.push({ path: '/editor', query: { id: this.s.id } })
+    },
     init: function () {
       this.cursor = 0;
       this.countdown = this.countdownDefault;
@@ -131,7 +134,7 @@ export default {
     currentFrame() {
       if (this.s) {
         if (this.cursor < this.s.frames.length) {
-          if (Array.isArray(this.s.frames[this.cursor])) {
+          if (this.s.frames[this.cursor].length > 1) {
             const max = Math.floor(this.s.frames[this.cursor].length - 1);
             const min = Math.ceil(0);
             const selectedIdx =
@@ -139,7 +142,7 @@ export default {
             return this.s.frames[this.cursor][selectedIdx];
           }
         } 
-        return this.s.frames[this.cursor];
+        return this.s.frames[this.cursor][0];
       }
       return null;
     },
@@ -305,6 +308,7 @@ video{
         </div>
         <div class="header_view-button button"  @click="fullScreen">F</div>
         <div class="header_view-button button"  @click="viewer">V</div>
+        <div class="header_view-button button"  @click="edit">E</div>
       </div>
       <div class="display_control">
         <div class="control_left-area" v-on:click="staticPrev"></div>
