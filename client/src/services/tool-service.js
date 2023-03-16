@@ -84,6 +84,10 @@ export default class ToolService {
             f.id = Date.now();
             return f.map(g => {
                 g.id = Date.now();
+
+                if (!g.divs) {
+                    return g;
+                }
                 g.divs.map(h => {
                     h.id = Date.now();
                     return h

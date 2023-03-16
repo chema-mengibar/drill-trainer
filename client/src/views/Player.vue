@@ -280,6 +280,7 @@ export default {
   font-size: 250px;
   letter-spacing: 10px;
   flex: 1;
+  color: white;
   @include calc-colors;
 }
 

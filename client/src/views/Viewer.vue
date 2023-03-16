@@ -166,6 +166,7 @@ export default {
 .mini-calc {
   min-height: 100px;
   font-family: var(--font-num);
+  color:white;
   text-align: center;
   font-weight: 400;
   line-height: 100px;
@@ -318,14 +319,14 @@ export default {
               class="mini-counter"
               v-bind:key="`${frame.color}_${index}`"
               v-if="frame && frame.type === 'counter'"
-              :class="`size-${frame.divs.length}`"
+            
             >
               {{ frame.value }}
             </div>
 
             <div
               class="mini-calc"
-              :class="`${frame.color} size-${frame.divs.length}`"
+              :class="frame.color"
               v-bind:key="`${frame.color}_${index}`"
               v-if="frame && frame.type === 'calc'"
             >
