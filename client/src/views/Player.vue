@@ -24,7 +24,7 @@ export default {
     countdown: 10,
     countdownDefault: 10,
     flow: 'ready',
-    useCountdown: false,
+    useCountdown: true,
     event: null
   }),
   methods: {
