@@ -7,6 +7,7 @@ import IconStick from "../components/action-icons/icon-stick-handling.vue";
 import IconStop from "../components/action-icons/icon-stop-control.vue";
 import IconBack from "../components/action-icons/icon-back.vue";
 import IconAvoid from "../components/action-icons/icon-avoid.vue";
+import {  toRaw } from "vue";
 
 export default {
   name: "Viewer",
@@ -28,7 +29,7 @@ export default {
       this.$router.push({ path: "/player", query: { id: this.s.id } });
     },
     edit: function () {
-      this.$router.push({ path: "/editor", query: { id: this.s.id } });
+      this.$router.push({ path: "/lab", query: { id: this.s.id } });
     },
     showDrill: function () {
       this.isShowDrill = true;
@@ -36,6 +37,14 @@ export default {
     hiddeDrill: function () {
       this.isShowDrill = false;
     },
+    load:function(){
+    const seqId = this.$route.query.id;
+
+    this.$services.toolService.fetchSeq(seqId).then((resp) => {
+      // success
+      console.log('[VIEWER] onLoad', this.$services.toolService.toRaw(resp))
+    });
+    }
   },
 
   created() {
@@ -43,11 +52,7 @@ export default {
   },
 
   mounted() {
-    const seqId = this.$route.query.id;
-
-    this.$services.toolService.fetchSeq(seqId).then((resp) => {
-      this.s = resp;
-    });
+    this.load();
   },
   computed: {},
   components: {
@@ -97,10 +102,7 @@ export default {
   margin-left: auto;
 }
 
-.viewer {
-  position: relative;
-  background-color: #bfbfbf;
-}
+
 
 .carrousel {
   width: 90%;
@@ -218,17 +220,27 @@ export default {
     }
   }
 }
+
+.viewer {
+  position: relative;
+  background-color: #bfbfbf;
+  flex:1;
+  overflow: scroll;
+}
+
+
+
 </style>
 
 <template>
-  <div class="viewer wrapper">
-    <template v-if="s">
+  <div class="viewer">
+    <template v-if="$services.toolService.getSequence()">
       <div class="carrousel">
         <div
           class="diapo"
           :class="{ asColum: currentFrame.length > 1 }"
           v-bind:key="`${currentFrame.type}_${index}`"
-          v-for="(currentFrame, index) in s.frames"
+          v-for="(currentFrame, index) in $services.toolService.getSequence().frames"
         >
           <div class="diapo-info">{{ currentFrame[0].duration }} seg.</div>
 
@@ -315,7 +327,8 @@ export default {
       <div class="display_header">
         <div class="header_back-button button" @click="back">B</div>
         <div class="header_view-button button" @click="fullScreen">F</div>
-        <div class="header_view-button button" @click="edit">E</div>
+        <div class="header_view-button button" @click="edit">Lab</div>
+        <div class="header_view-button button" @click="load">R</div>
         <div class="header_view-button button" @click="showDrill">Drill</div>
       </div>
     </div>

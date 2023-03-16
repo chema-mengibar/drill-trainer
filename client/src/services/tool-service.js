@@ -1,5 +1,5 @@
 import DemoJson from './sequences/demo.json'
-import { isProxy, reactive } from "vue";
+import { toRaw, reactive } from "vue";
 
 export default class ToolService {
 
@@ -71,7 +71,7 @@ export default class ToolService {
             .then((jsonResponse) => {
                 if (jsonResponse.data) {
                     this.data.sequence = jsonResponse.data
-                    this.map()
+                    this.addIds();
                     return this.data.sequence;
                 }
             }, (error) => {
@@ -79,7 +79,7 @@ export default class ToolService {
             })
     }
 
-    map() {
+    addIds() {
         const f = this.data.sequence.frames.map(f => {
             f.id = crypto.randomUUID();
             return f.map(g => {
@@ -96,24 +96,37 @@ export default class ToolService {
     }
 
     async saveSeq(data) {
-        console.log(data)
-        return fetch(`${this.domain}/save.php`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-                },
-                body: JSON.stringify(data)
+
+
+
+        data.frames.forEach(frame => {
+            frame.forEach(frameData => {
+                if (frameData.type === 'calc' || frameData.type === 'counter') {
+                    delete(frameData.divs)
+                }
             })
-            // .then((res) => {
-            //     return res.json()
-            // })
-            .then((jsonResponse) => {
-                console.log('RESP', jsonResponse)
-                return jsonResponse
-            }, (error) => {
-                console.error('[ToolService] saveSeq:', error)
-            })
+        })
+
+        console.log(this.toRaw(data))
+
+        this.data.sequence = data;
+        // return fetch(`${this.domain}/save.php`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Accept': 'application/json',
+        //             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        //         },
+        //         body: JSON.stringify(data)
+        //     })
+        //     // .then((res) => {
+        //     //     return res.json()
+        //     // })
+        //     .then((jsonResponse) => {
+        //         console.log('RESP', jsonResponse)
+        //         return jsonResponse
+        //     }, (error) => {
+        //         console.error('[ToolService] saveSeq:', error)
+        //     })
     }
 
     addFrameBefore() {
@@ -128,7 +141,56 @@ export default class ToolService {
             "duration": 5
         }];
         this.data.sequence.frames.unshift(item);
-        this.map();
+        this.addIds();
+    }
+
+    addFrameAfterIdx({ frameIdx }) {
+        const f = Number(frameIdx) + 1;
+        const item = [{
+            id: crypto.randomUUID(),
+            "type": "action",
+            "divs": [{
+                id: crypto.randomUUID(),
+                "color": "blue",
+                "icon": "pass"
+            }],
+            "duration": 5
+        }];
+        this.data.sequence.frames.splice(f, 0, item);
+    }
+
+    addSubFrameBefore({ frameIdx, subFrameIdx }) {
+        const f = Number(frameIdx);
+        const sf = Number(subFrameIdx);
+        const item = {
+            id: crypto.randomUUID(),
+            "type": "action",
+            "divs": [{
+                id: crypto.randomUUID(),
+                "color": "green",
+                "icon": "shot"
+            }],
+            "duration": 5
+        };
+        this.data.sequence.frames[f].splice(sf, 0, item);
+    }
+
+
+    addDiv({ frameIdx, subFrameIdx, divIdx }) {
+        const f = Number(frameIdx);
+        const sf = Number(subFrameIdx);
+        const d = Number(divIdx);
+
+        const item = {
+            id: crypto.randomUUID(),
+            "color": "green",
+            "icon": "shot"
+        };
+        this.data.sequence.frames[f][sf].divs.splice(d, 0, item);
+    }
+
+    toRaw(proxy) {
+        return JSON.parse(JSON.stringify(proxy))
     }
 
 }

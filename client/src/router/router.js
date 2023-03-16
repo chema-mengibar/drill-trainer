@@ -27,6 +27,13 @@ const routes = [{
             import ('../views/Editor.vue')),
 
     },
+    {
+        path: '/lab',
+        name: 'Lab',
+        component: () => (
+            import ('../views/Lab.vue')),
+
+    },
 
 
 ];

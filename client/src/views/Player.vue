@@ -53,7 +53,7 @@ export default {
       this.$router.push({ path: '/viewer', query: { id: this.s.id } })
     },
     edit: function () {
-      this.$router.push({ path: '/editor', query: { id: this.s.id } })
+      this.$router.push({ path: '/lab', query: { id: this.s.id } })
     },
     init: function () {
       this.cursor = 0;

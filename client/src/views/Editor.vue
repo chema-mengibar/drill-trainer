@@ -30,11 +30,13 @@ export default {
       console.log(">>>>>", position, frameIdx, subFrameIdx, divIdx);
 
       if (
-        position === "after" &&
+        (position === "before" || position === "last") &&
         frameIdx !== null &&
         subFrameIdx !== null &&
         divIdx === null
       ) {
+        this.$services.toolService.addSubFrameBefore({ frameIdx, subFrameIdx });
+        this.s = this.$services.toolService.getSequence();
         console.log("[ADD] 1");
         return;
       }
@@ -52,32 +54,14 @@ export default {
       }
 
       if (
-        position === "before" &&
+        (position === "before" || position === "last") &&
         frameIdx !== null &&
         subFrameIdx !== null &&
         divIdx !== null
       ) {
         console.log("[ADD] 3");
-        return;
-      }
-
-      if (
-        position === "last" &&
-        frameIdx !== null &&
-        subFrameIdx !== null &&
-        divIdx !== null
-      ) {
-        console.log("[ADD] 4");
-        return;
-      }
-
-      if (
-        position === "last" &&
-        frameIdx !== null &&
-        subFrameIdx !== null &&
-        divIdx === null
-      ) {
-        console.log("[ADD] 5");
+        this.$services.toolService.addDiv({ frameIdx, subFrameIdx, divIdx });
+        this.s = this.$services.toolService.getSequence();
         return;
       }
 
@@ -87,18 +71,9 @@ export default {
         subFrameIdx === null &&
         divIdx === null
       ) {
-        console.log("[ADD] 6");
-        // const item = {
-        //   type: "action",
-        //   divs: [
-        //     {
-        //       color: "red",
-        //       icon: "shot",
-        //     },
-        //   ],
-        //   duration: 5,
-        // };
-        // this.model.frames.splice(frameIdx, 0, item);
+        console.log("[ADD] 4");
+        this.$services.toolService.addFrameAfterIdx({ frameIdx });
+        this.s = this.$services.toolService.getSequence();
         return;
       }
     },
@@ -143,56 +118,62 @@ export default {
 <style  lang="scss">
 @import "../styles/media";
 
-.add-frame,
-.add-subframe,
-.add-div {
-  padding: 5px;
-  margin: 5px 0;
-  width: 200px;
-  border-radius: 10px;
-  text-align: center;
-  line-height: 12px;
-  height: 24px;
-  cursor: pointer;
+.canvas {
+  display: flex;
+  align-items: center;
 }
 
-.add-frame {
-  border: 1px solid rgb(110, 0, 124);
-  color: rgb(110, 0, 124);
-}
-
-.add-subframe {
-  border: 1px solid rgb(255, 5, 59);
-  color: rgb(255, 5, 59);
-}
-
-.add-div {
-  border: 1px solid rgb(0, 189, 79);
-  color: rgb(0, 189, 79);
+.loop-frames {
+  display: flex;
+  align-items: center;
+  padding: 0 10px 0 0;
+  gap: 10px;
 }
 
 .obj-frame {
-  border: 2px solid black;
+  background-color: rgba(42, 17, 131, 0.1);
+  border: 2px solid rgb(179, 179, 179);
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.obj-frame-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .obj-subframe {
-  border: 1px dashed black;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(179, 179, 179);
   padding: 10px;
+}
+
+.labels-group{
+  border-bottom: 1px solid #999;
+  margin-bottom: 10px;
 }
 
 .subframe-divs-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .subframe-divs-groups {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  padding: 0 10px 0 0;
+  gap: 10px;
 }
 
 .obj-div {
-  border: 1px dotted black;
+  background-color: rgba(0, 0, 0, 0.1);
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -212,18 +193,52 @@ export default {
   }
 }
 
-button {
+.add-frame,
+.add-subframe,
+.add-div {
+  padding: 5px;
+  margin: 5px 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.add-frame {
+  border: 1px solid rgb(110, 0, 124);
+  color: rgb(110, 0, 124);
+}
+
+.add-subframe {
+  border: 1px solid rgb(255, 5, 59);
+  color: rgb(255, 5, 59);
+}
+
+.add-div {
+  border: 1px solid rgb(0, 189, 79);
+  color: rgb(0, 189, 79);
+}
+
+button.submit {
   background-color: black;
   color: white;
   padding: 20px;
   margin: 20px;
 }
+
+.frame-editor{
+  flex:1;
+  overflow: scroll;
+}
 </style>
 
 <template>
-  <div class="frame-editor wrapper">
+  <div class="frame-editor">
     <form @submit.prevent="submit" novalidate>
-      <button type="submit">Save</button>
+      <button type="submit" class="submit">Save</button>
 
       <div class="form-row">
         <label>Id</label>
@@ -243,16 +258,16 @@ button {
       </div>
 
       Frames:
-      <div v-if="s">
-        <div
+      <div v-if="s" class="canvas">
+        <button
           class="add-frame"
           data-position="before"
           :data-frame-idx="null"
           :data-subframe-idx="null"
           v-on:click="add($event)"
         >
-          Add Frame (Before)
-        </div>
+          +
+        </button>
 
         <div
           class="loop-frames"
@@ -260,22 +275,23 @@ button {
           v-for="(frame, indF) in currentFrames"
         >
           <div class="obj-frame">
-    
-              <div
-                v-for="(subframe, indSf) in frame"
-                v-bind:key="`${subframe.id}`"
+            <div
+              class="obj-frame-child"
+              v-for="(subframe, indSf) in frame"
+              v-bind:key="`${subframe.id}`"
+            >
+              <button
+                class="add-subframe"
+                data-position="before"
+                :data-frame-idx="indF"
+                :data-subframe-idx="indSf"
+                v-on:click="add($event)"
               >
-                <div
-                  class="add-subframe"
-                  data-position="after"
-                  :data-frame-idx="indF"
-                  :data-subframe-idx="indSf"
-                  v-on:click="add($event)"
-                >
-                  Add Sub frame (Before {{ indSf }})
-                </div>
+                +
+              </button>
 
-                <div class="obj-subframe">
+              <div class="obj-subframe">
+                <div class="labels-group">
                   <div class="obj-x-label">
                     <label>Type: {{ subframe.type }}</label>
                     <SelectType
@@ -283,99 +299,99 @@ button {
                       :initValue="model.frames[indF][indSf].type"
                     />
                   </div>
-
-                  <div
-                    v-if="
-                      subframe.type === 'counter' || subframe.type === 'calc'
-                    "
-                  >
-                    Value: {{ subframe.value }}
-                    <input v-model="model.frames[indF][indSf].value" />
-                  </div>
-
-                  <div
-                    v-if="subframe.type === 'action'"
-                    class="subframe-divs-container"
-                  >
-                    <!-- B:start-->
-                    <div
-                      class="subframe-divs-groups"
-                      v-for="(div, indD) in subframe.divs"
-                      v-bind:key="`${div.id}`"
-                    >
-                      <div
-                        class="add-div"
-                        data-position="before"
-                        :data-frame-idx="indF"
-                        :data-subframe-idx="indSf"
-                        :data-div-idx="indD"
-                        v-on:click="add($event)"
-                      >
-                        Add Div (Before {{ indD }})
-                      </div>
-
-                      <div
-                        class="obj-div"
-                        :data-frame-idx="indF"
-                        :data-subframe-idx="indSf"
-                        :data-div-idx="indD"
-                      >
-                        <label>Color: {{ div.color }}</label>
-                        <SelectColor
-                          v-model="model.frames[indF][indSf].divs[indD].color"
-                          :initValue="
-                            model.frames[indF][indSf].divs[indD].color
-                          "
-                        />
-                        <label>Icon: {{ div.icon }}</label>
-                        <SelectAction
-                          v-model="model.frames[indF][indSf].divs[indD].icon"
-                          :initValue="model.frames[indF][indSf].divs[indD].icon"
-                        />
-                      </div>
-                    </div>
-                    <div
-                      class="add-div"
-                      v-on:click="add($event)"
-                      data-position="last"
-                      :data-frame-idx="indF"
-                      :data-subframe-idx="indSf"
-                      :data-div-idx="subframe.divs.length"
-                    >
-                      Add Div (At {{ subframe.divs.length }})
-                    </div>
-                    <!-- B: end-->
-                  </div>
-
                   <div class="obj-x-label">
                     <label class="obj-x-duration">
                       Duration {{ subframe.duration }}:
                     </label>
                     <input v-model="model.frames[indF][indSf].duration" />
                   </div>
+
+                  <div
+                    class="obj-x-label"
+                    v-if="
+                      subframe.type === 'counter' || subframe.type === 'calc'
+                    "
+                  >
+                    <label class="obj-x-value">
+                      Value {{ subframe.value }}:
+                    </label>
+                    <input v-model="model.frames[indF][indSf].value" />
+                  </div>
+                </div>
+
+                <div
+                  v-if="subframe.type === 'action'"
+                  class="subframe-divs-container"
+                >
+                  <!-- B:start-->
+                  <div
+                    class="subframe-divs-groups"
+                    v-for="(div, indD) in subframe.divs"
+                    v-bind:key="`${div.id}`"
+                  >
+                    <div
+                      class="add-div"
+                      data-position="before"
+                      :data-frame-idx="indF"
+                      :data-subframe-idx="indSf"
+                      :data-div-idx="indD"
+                      v-on:click="add($event)"
+                    >
+                      +
+                    </div>
+
+                    <div
+                      class="obj-div"
+                      :data-frame-idx="indF"
+                      :data-subframe-idx="indSf"
+                      :data-div-idx="indD"
+                    >
+                      <label>Color: {{ div.color }}</label>
+                      <SelectColor
+                        v-model="model.frames[indF][indSf].divs[indD].color"
+                        :initValue="model.frames[indF][indSf].divs[indD].color"
+                      />
+                      <label>Icon: {{ div.icon }}</label>
+                      <SelectAction
+                        v-model="model.frames[indF][indSf].divs[indD].icon"
+                        :initValue="model.frames[indF][indSf].divs[indD].icon"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    class="add-div"
+                    v-on:click="add($event)"
+                    data-position="last"
+                    :data-frame-idx="indF"
+                    :data-subframe-idx="indSf"
+                    :data-div-idx="subframe.divs.length"
+                  >
+                    +
+                  </button>
+                  <!-- B: end-->
                 </div>
               </div>
+            </div>
 
-              <div
-                class="add-subframe"
-                data-position="last"
-                :data-frame-idx="indF"
-                :data-subframe-idx="frame.length"
-                v-on:click="add($event)"
-              >
-                Add Sub frame (At Last {{ frame.length }})
-              </div>
-     
+            <button
+              class="add-subframe"
+              data-position="last"
+              :data-frame-idx="indF"
+              :data-subframe-idx="frame.length"
+              v-on:click="add($event)"
+            >
+              +
+            </button>
           </div>
-          <div
+          <button
             class="add-frame"
             data-position="after"
             :data-frame-idx="indF"
             :data-subframe-idx="null"
             v-on:click="add($event)"
           >
-            Add Frame (After)
-          </div>
+            +
+          </button>
         </div>
       </div>
     </form>

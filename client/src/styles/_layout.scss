@@ -2,12 +2,13 @@
 #app {
     min-height: 100vh;
     height: 100%;
-    width: 100%;
+    width: 100vw;
     background: var(--app-color);
+    // width: fit-content;
 }
 
 .wrapper {
-    width: 100%;
+    min-width: 100vw;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
