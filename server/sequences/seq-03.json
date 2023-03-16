@@ -3,14 +3,15 @@
     "name": "Net pass",
     "drill": "drill-03.png",
     "description": "",
-    "frames": [{
+    "frames": [
+        [{
             "type": "action",
             "divs": [{
                 "color": "yellow",
                 "icon": "stick"
             }],
             "duration": 5
-        },
+        }],
         [{
             "type": "action",
             "divs": [{

@@ -3,22 +3,23 @@
     "name": "Break out pass",
     "drill": "drill-04.png",
     "description": "",
-    "frames": [{
+    "frames": [
+        [{
             "type": "action",
             "divs": [{
                 "color": "red",
                 "icon": "run"
             }],
             "duration": 7
-        },
-        {
+        }],
+        [{
             "type": "action",
             "divs": [{
                 "color": "red",
                 "icon": "control"
             }],
             "duration": 10
-        },
+        }],
         [{
                 "type": "action",
                 "divs": [{

@@ -97,8 +97,6 @@ export default class ToolService {
 
     async saveSeq(data) {
 
-
-
         data.frames.forEach(frame => {
             frame.forEach(frameData => {
                 if (frameData.type === 'calc' || frameData.type === 'counter') {
@@ -107,26 +105,27 @@ export default class ToolService {
             })
         })
 
-        console.log(this.toRaw(data))
+        console.log('>>>>', this.toRaw(data))
 
         this.data.sequence = data;
-        // return fetch(`${this.domain}/save.php`, {
-        //         method: 'POST',
-        //         headers: {
-        //             'Accept': 'application/json',
-        //             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-        //         },
-        //         body: JSON.stringify(data)
-        //     })
-        //     // .then((res) => {
-        //     //     return res.json()
-        //     // })
-        //     .then((jsonResponse) => {
-        //         console.log('RESP', jsonResponse)
-        //         return jsonResponse
-        //     }, (error) => {
-        //         console.error('[ToolService] saveSeq:', error)
-        //     })
+        return fetch(`${this.domain}/save.php`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                },
+                body: JSON.stringify(data)
+            })
+            // .then((res) => {
+            //     return res.json()
+            // })
+            .then((jsonResponse) => {
+                console.log('RESP', jsonResponse.status)
+                console.log('RESP', jsonResponse.statusText)
+                return jsonResponse
+            }, (error) => {
+                console.error('[ToolService] saveSeq:', error)
+            })
     }
 
     addFrameBefore() {
@@ -145,7 +144,7 @@ export default class ToolService {
     }
 
     addFrameAfterIdx({ frameIdx }) {
-        const f = Number(frameIdx) + 1;
+        const f = Number(frameIdx);
         const item = [{
             id: crypto.randomUUID(),
             "type": "action",
@@ -157,11 +156,13 @@ export default class ToolService {
             "duration": 5
         }];
         this.data.sequence.frames.splice(f, 0, item);
+
     }
 
     addSubFrameBefore({ frameIdx, subFrameIdx }) {
         const f = Number(frameIdx);
         const sf = Number(subFrameIdx);
+        console.log(f, sf)
         const item = {
             id: crypto.randomUUID(),
             "type": "action",
@@ -173,6 +174,7 @@ export default class ToolService {
             "duration": 5
         };
         this.data.sequence.frames[f].splice(sf, 0, item);
+        this.addIds();
     }
 
 
@@ -187,7 +189,33 @@ export default class ToolService {
             "icon": "shot"
         };
         this.data.sequence.frames[f][sf].divs.splice(d, 0, item);
+        this.addIds();
     }
+
+
+    removeDiv({ frameIdx, subFrameIdx, divIdx }) {
+        const f = Number(frameIdx);
+        const sf = Number(subFrameIdx);
+        const d = Number(divIdx);
+
+        this.data.sequence.frames[f][sf].divs.splice(d, 1);
+    }
+
+
+    removeSubFrame({ frameIdx, subFrameIdx }) {
+        const f = Number(frameIdx);
+        const sf = Number(subFrameIdx);
+
+        this.data.sequence.frames[f].splice(sf, 1);
+    }
+
+    removeFrame({ frameIdx }) {
+        const f = Number(frameIdx);
+
+
+        this.data.sequence.frames.splice(f, 1);
+    }
+
 
     toRaw(proxy) {
         return JSON.parse(JSON.stringify(proxy))

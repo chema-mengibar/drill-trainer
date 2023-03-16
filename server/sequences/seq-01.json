@@ -9,6 +9,7 @@
                 "divs": [{
                     "color": "red",
                     "icon": "stick"
+
                 }, {
                     "color": "blue",
                     "icon": "avoid"

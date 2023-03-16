@@ -7,7 +7,7 @@ import IconStick from "../components/action-icons/icon-stick-handling.vue";
 import IconStop from "../components/action-icons/icon-stop-control.vue";
 import IconBack from "../components/action-icons/icon-back.vue";
 import IconAvoid from "../components/action-icons/icon-avoid.vue";
-import {  toRaw } from "vue";
+import { toRaw } from "vue";
 
 export default {
   name: "Viewer",
@@ -37,14 +37,15 @@ export default {
     hiddeDrill: function () {
       this.isShowDrill = false;
     },
-    load:function(){
-    const seqId = this.$route.query.id;
+    load: function () {
+      const seqId = this.$route.query.id;
 
-    this.$services.toolService.fetchSeq(seqId).then((resp) => {
-      // success
-      console.log('[VIEWER] onLoad', this.$services.toolService.toRaw(resp))
-    });
-    }
+      this.$services.toolService.fetchSeq(seqId).then((resp) => {
+        // success
+        console.log("[VIEWER] onLoad", this.$services.toolService.toRaw(resp));
+        this.s = this.$services.toolService.getSequence();
+      });
+    },
   },
 
   created() {
@@ -73,8 +74,8 @@ export default {
 @import "../styles/cards";
 
 .drill-container {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: auto;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
@@ -102,15 +103,13 @@ export default {
   margin-left: auto;
 }
 
-
-
 .carrousel {
   width: 90%;
-  height: 100vh;
-  overflow-x: scroll;
+  height: 100%;
+  overflow-x: auto;
   display: flex;
   gap: 10px;
-  top: 10px;
+  top: 0;
   left: 0;
   right: 0;
   margin-left: auto;
@@ -182,8 +181,8 @@ export default {
 
 .display {
   position: absolute;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: transparent;
   display: flex;
   flex-direction: column;
@@ -224,12 +223,9 @@ export default {
 .viewer {
   position: relative;
   background-color: #bfbfbf;
-  flex:1;
-  overflow: scroll;
+  flex: 1;
+  overflow: auto;
 }
-
-
-
 </style>
 
 <template>
@@ -240,85 +236,79 @@ export default {
           class="diapo"
           :class="{ asColum: currentFrame.length > 1 }"
           v-bind:key="`${currentFrame.type}_${index}`"
-          v-for="(currentFrame, index) in $services.toolService.getSequence().frames"
+          v-for="(currentFrame, index) in $services.toolService.getSequence()
+            .frames"
         >
           <div class="diapo-info">{{ currentFrame[0].duration }} seg.</div>
 
-            <template v-for="(frame, index) in currentFrame">
-              <!-- start -->
-              <template v-if="frame && frame.type === 'action'">
-                <div
-                  class="mini-action"
-                  v-bind:key="`${div.color}_${index}`"
-                  v-for="(div, index) in frame.divs"
-                  :class="`${div.color} size-${frame.divs.length}`"
-                >
-                  <IconChangeDirection
-                    v-if="frame && div.icon === 'change'"
-                    w="100%"
-                    h="100%"
-                  />
-                  <IconShoot
-                    v-if="frame && div.icon === 'shot'"
-                    w="100%"
-                    h="100%"
-                  />
-                  <IconRun
-                    v-if="frame && div.icon === 'run'"
-                    w="100%"
-                    h="100%"
-                  />
-                  <IconAvoid
-                    v-if="currentFrame && div.icon === 'avoid'"
-                    w="100%"
-                    h="100%"
-                  />
-                  <IconPass
-                    v-if="frame && div.icon === 'pass'"
-                    w="100%"
-                    h="100%"
-                  />
-                  <IconStick
-                    v-if="frame && div.icon === 'stick'"
-                    w="100%"
-                    h="100%"
-                  />
-                  <IconStop
-                    v-if="frame && div.icon === 'control'"
-                    w="100%"
-                    h="100%"
-                  />
-                  <IconBack
-                    v-if="frame && div.icon === 'back'"
-                    w="100%"
-                    h="100%"
-                  />
-                </div>
-              </template>
-
+          <template v-for="(frame, index) in currentFrame">
+            <!-- start -->
+            <template v-if="frame && frame.type === 'action'">
               <div
-                class="mini-counter"
-                v-bind:key="`${frame.color}_${index}`"
-                v-if="frame && frame.type === 'counter'"
-                :class="`size-${frame.divs.length}`"
+                class="mini-action"
+                v-bind:key="`${div.color}_${index}`"
+                v-for="(div, index) in frame.divs"
+                :class="`${div.color} size-${frame.divs.length}`"
               >
-                {{ frame.value }}
+                <IconChangeDirection
+                  v-if="frame && div.icon === 'change'"
+                  w="100%"
+                  h="100%"
+                />
+                <IconShoot
+                  v-if="frame && div.icon === 'shot'"
+                  w="100%"
+                  h="100%"
+                />
+                <IconRun v-if="frame && div.icon === 'run'" w="100%" h="100%" />
+                <IconAvoid
+                  v-if="currentFrame && div.icon === 'avoid'"
+                  w="100%"
+                  h="100%"
+                />
+                <IconPass
+                  v-if="frame && div.icon === 'pass'"
+                  w="100%"
+                  h="100%"
+                />
+                <IconStick
+                  v-if="frame && div.icon === 'stick'"
+                  w="100%"
+                  h="100%"
+                />
+                <IconStop
+                  v-if="frame && div.icon === 'control'"
+                  w="100%"
+                  h="100%"
+                />
+                <IconBack
+                  v-if="frame && div.icon === 'back'"
+                  w="100%"
+                  h="100%"
+                />
               </div>
-
-              <div
-                class="mini-calc"
-                :class="`${frame.color} size-${frame.divs.length}`"
-                v-bind:key="`${frame.color}_${index}`"
-                v-if="frame && frame.type === 'calc'"
-              >
-                {{ frame.value }}
-              </div>
-
-              <!--  end -->
             </template>
 
+            <div
+              class="mini-counter"
+              v-bind:key="`${frame.color}_${index}`"
+              v-if="frame && frame.type === 'counter'"
+              :class="`size-${frame.divs.length}`"
+            >
+              {{ frame.value }}
+            </div>
 
+            <div
+              class="mini-calc"
+              :class="`${frame.color} size-${frame.divs.length}`"
+              v-bind:key="`${frame.color}_${index}`"
+              v-if="frame && frame.type === 'calc'"
+            >
+              {{ frame.value }}
+            </div>
 
+            <!--  end -->
+          </template>
         </div>
       </div>
     </template>

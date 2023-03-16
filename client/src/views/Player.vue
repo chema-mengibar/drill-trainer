@@ -188,8 +188,8 @@ export default {
 
 .display {
   position: absolute;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: transparent;
   display: flex;
   flex-direction: column;
