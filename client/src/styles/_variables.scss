@@ -32,4 +32,18 @@
     --vd6: 4px;
     --vd8: 3px;
     --vd10: 2.4px;
+    /* editor */
+    --ed-base: #333131;
+    --ed-base-text: #fdfdfd;
+    --ed-frame-bg: rgba(146, 146, 146, 0.356);
+    --ed-subframe-bg: rgba(194, 194, 194, 0.288);
+    --ed-div-bg: rgba(0, 0, 0, 0.226);
+    --ed-button-add-base: transparent;
+    --ed-button-remove-base: transparent;
+    --ed-button-remove: #d87a0fcc;
+    --ed-button-add_frame: #00d9ff86;
+    --ed-button-add_subframe: #00d9ff86;
+    --ed-button-add_div: #00d9ff86;
+    --ed-button-submit: rgb(226, 8, 143);
+    --ed-button-submit-text: rgb(255, 255, 255);
 }

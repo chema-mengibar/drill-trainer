@@ -71,7 +71,19 @@ export default {
         v-for="sequenceItem in list"
       >
         {{ sequenceItem.name }}
-        <img :src="$services.toolService.getImagePath(sequenceItem.drill)" alt="" width="300" height="300" />
+        <img
+          :src="$services.toolService.getImagePath(sequenceItem.drill)"
+          alt=""
+          width="300"
+          height="300"
+        />
+      </router-link>
+
+      <router-link
+        class="thumbnail"
+        :to="{ name: 'Lab'}"
+      >
+        +
       </router-link>
     </div>
   </div>

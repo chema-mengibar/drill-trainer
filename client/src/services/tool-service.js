@@ -81,11 +81,11 @@ export default class ToolService {
 
     addIds() {
         const f = this.data.sequence.frames.map(f => {
-            f.id = crypto.randomUUID();
+            f.id = Date.now();
             return f.map(g => {
-                g.id = crypto.randomUUID();
+                g.id = Date.now();
                 g.divs.map(h => {
-                    h.id = crypto.randomUUID();
+                    h.id = Date.now();
                     return h
                 })
                 return g;
@@ -104,8 +104,6 @@ export default class ToolService {
                 }
             })
         })
-
-        console.log('>>>>', this.toRaw(data))
 
         this.data.sequence = data;
         return fetch(`${this.domain}/save.php`, {
@@ -130,10 +128,10 @@ export default class ToolService {
 
     addFrameBefore() {
         const item = [{
-            id: crypto.randomUUID(),
+            id: Date.now(),
             "type": "action",
             "divs": [{
-                id: crypto.randomUUID(),
+                id: Date.now(),
                 "color": "yellow",
                 "icon": "shot"
             }],
@@ -146,10 +144,10 @@ export default class ToolService {
     addFrameAfterIdx({ frameIdx }) {
         const f = Number(frameIdx);
         const item = [{
-            id: crypto.randomUUID(),
+            id: Date.now(),
             "type": "action",
             "divs": [{
-                id: crypto.randomUUID(),
+                id: Date.now(),
                 "color": "blue",
                 "icon": "pass"
             }],
@@ -164,10 +162,10 @@ export default class ToolService {
         const sf = Number(subFrameIdx);
         console.log(f, sf)
         const item = {
-            id: crypto.randomUUID(),
+            id: Date.now(),
             "type": "action",
             "divs": [{
-                id: crypto.randomUUID(),
+                id: Date.now(),
                 "color": "green",
                 "icon": "shot"
             }],
@@ -184,7 +182,7 @@ export default class ToolService {
         const d = Number(divIdx);
 
         const item = {
-            id: crypto.randomUUID(),
+            id: Date.now(),
             "color": "green",
             "icon": "shot"
         };
@@ -219,6 +217,33 @@ export default class ToolService {
 
     toRaw(proxy) {
         return JSON.parse(JSON.stringify(proxy))
+    }
+
+    create() {
+        const unique = `new-${Date.now()}`;
+        const dummy = {
+            id: unique,
+            name: unique,
+            description: '-',
+            drill: '-',
+            frames: [
+                [{
+                    "type": "action",
+                    "divs": [{
+                        "color": "red",
+                        "icon": "stick"
+
+                    }, {
+                        "color": "blue",
+                        "icon": "avoid"
+                    }],
+                    "duration": 5
+                }]
+            ]
+
+        };
+        this.data.sequence = dummy;
+        return this.data.sequence;
     }
 
 }

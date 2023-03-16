@@ -39,12 +39,18 @@ export default {
     },
     load: function () {
       const seqId = this.$route.query.id;
-
-      this.$services.toolService.fetchSeq(seqId).then((resp) => {
-        // success
-        console.log("[VIEWER] onLoad", this.$services.toolService.toRaw(resp));
+      if (seqId) {
+        this.$services.toolService.fetchSeq(seqId).then((resp) => {
+          // success
+          console.log(
+            "[VIEWER] onLoad",
+            this.$services.toolService.toRaw(resp)
+          );
+          this.s = this.$services.toolService.getSequence();
+        });
+      }else{
         this.s = this.$services.toolService.getSequence();
-      });
+      }
     },
   },
 
@@ -169,6 +175,16 @@ export default {
   @include calc-colors;
 }
 
+.size-4 {
+  width: calc(190px / 4);
+  margin-bottom: 5px;
+}
+
+.size-3 {
+  width: calc(190px / 3);
+  margin-bottom: 5px;
+}
+
 .size-2 {
   width: calc(190px / 2);
   margin-bottom: 5px;
@@ -230,6 +246,15 @@ export default {
 
 <template>
   <div class="viewer">
+     <div class="display">
+      <div class="display_header">
+        <div class="header_back-button button" @click="back">B</div>
+        <div class="header_view-button button" @click="fullScreen">F</div>
+        <div class="header_view-button button" @click="edit">Lab</div>
+        <div class="header_view-button button" @click="load">R</div>
+        <div class="header_view-button button" @click="showDrill">Drill</div>
+      </div>
+    </div>
     <template v-if="$services.toolService.getSequence()">
       <div class="carrousel">
         <div
@@ -313,15 +338,7 @@ export default {
       </div>
     </template>
 
-    <div class="display">
-      <div class="display_header">
-        <div class="header_back-button button" @click="back">B</div>
-        <div class="header_view-button button" @click="fullScreen">F</div>
-        <div class="header_view-button button" @click="edit">Lab</div>
-        <div class="header_view-button button" @click="load">R</div>
-        <div class="header_view-button button" @click="showDrill">Drill</div>
-      </div>
-    </div>
+   
 
     <div v-if="isShowDrill" class="drill-container">
       <img :src="$services.toolService.getImagePath(s.drill)" />

@@ -1,0 +1,16 @@
+html {
+    scrollbar-color: #494949 #2c2c2c;
+    scrollbar-width: thin;
+}
+
+
+/* For Chrome and other browsers except Firefox */
+
+body::-webkit-scrollbar {
+    width: 0.5em;
+    background-color: #2b2b2b;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #525252;
+}
