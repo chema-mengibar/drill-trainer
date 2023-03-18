@@ -2,30 +2,51 @@
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: *');
-header('Content-Type: application/json');
+//header('Content-Type: application/json');
 
-$filename = $_FILES['drill']['name'];
+// for json send
+//$data = json_decode(file_get_contents('php://input'), true);
 
-$data = json_decode(file_get_contents('php://input'), true);
 
-$id = $data['id'];
-$name = $data['name'];
-$description = $data['description'];
-$drill = $data['drill'];
-$frames = $data['frames'];
+
+
+$id = $_POST['id'];
+$name = $_POST['name'];
+$description = $_POST['description'];
+$frames = json_decode($_POST['frames']);
+
+
+$filename = '';
+$upload = '';
+
+if (isset($_FILES['drill'])) {
+  $filename = $_FILES['drill']['name'];
+  //$path = './'.'images'.'/';
+  $path = 'images'.'/';
+  $pathAndName = $path.$filename;
+  $fileTmp = $_FILES['files']['tmp_name'];
+  if(is_writable($path)){
+    move_uploaded_file($fileTmp, $pathAndName);
+    $upload = $pathAndName;
+  }else{
+    $upload = 'error_write';
+  }
+ 
+}
+
 
 $arr = array(
   'id' => $id,
   'description' => $description,
   'name' => $name,
-  'drill' => $drill,
+  'drill' => $filename,
   'frames' => $frames
 );
 
 $response = array(
   'error'=> NULL,
   'data'=> $arr,
-  'file'=> $$filename,
+  'upload'=> $upload,
   'request' => NULL
 );
 

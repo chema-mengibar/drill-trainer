@@ -25,6 +25,7 @@ export default {
     countdownDefault: 10,
     flow: "ready",
     useCountdown: true,
+    useLoop: true,
     event: null,
   }),
   methods: {
@@ -73,6 +74,10 @@ export default {
       if (this.cursor < this.s.frames.length - 1) {
         this.cursor++;
       } else {
+        if(this.useLoop){
+          this.cursor=0;
+          return;
+        }
         this.flow = "ready";
         clearInterval(this.intervalFlowId);
       }
@@ -113,6 +118,15 @@ export default {
   mounted() {
     const _ = this;
     const seqId = this.$route.query.id;
+    const loop = this.$route.query.l;
+    const count = this.$route.query.c;
+    if(loop){
+      this.useLoop = loop === '1'
+    }
+
+    if(count){
+      this.useCountdown = count === '1'
+    }
 
     this.$services.toolService.fetchSeq(seqId).then((resp) => {
       this.s = resp;
@@ -128,6 +142,7 @@ export default {
   computed: {
     currentFrame() {
       if (this.s) {
+
         if (this.cursor < this.s.frames.length) {
           if (this.s.frames[this.cursor].length > 1) {
             const max = Math.floor(this.s.frames[this.cursor].length - 1);
@@ -137,6 +152,7 @@ export default {
             return this.s.frames[this.cursor][selectedIdx];
           }
         }
+         
         return this.s.frames[this.cursor][0];
       }
       return null;
