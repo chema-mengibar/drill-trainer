@@ -99,7 +99,7 @@ export default class ToolService {
         this.data.sequence.frames = f;
     }
 
-    async saveSeq(data) {
+    async saveSeq(data, file) {
 
         data.frames.forEach(frame => {
             frame.forEach(frameData => {
@@ -110,21 +110,29 @@ export default class ToolService {
         })
 
         this.data.sequence = data;
+
+        var fd = new FormData();
+        fd.append("drill", file);
+        fd.append("id", data.id);
+        fd.append("name", data.name);
+        fd.append("frames", JSON.stringify(data.frames));
+        fd.append("description", data.description);
+
+
         return fetch(`${this.domain}/save.php`, {
                 method: 'POST',
                 headers: {
-                    'Accept': 'application/json',
-                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                    //    'Accept': 'application/json',
+                    //    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                 },
-                body: JSON.stringify(data)
+                body: fd //JSON.stringify(data)
             })
             // .then((res) => {
             //     return res.json()
             // })
-            .then((jsonResponse) => {
-                console.log('RESP', jsonResponse.status)
-                console.log('RESP', jsonResponse.statusText)
-                return jsonResponse
+            .then((resp) => {
+                console.log('RESP', resp)
+                return resp
             }, (error) => {
                 console.error('[ToolService] saveSeq:', error)
             })

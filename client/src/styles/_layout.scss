@@ -1,10 +1,14 @@
 @import 'media';
+html,
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+
 #app {
-    min-height: 100vh;
-    height: 100%;
+    height: 100vh;
     width: 100vw;
     background: var(--app-color);
-    // width: fit-content;
 }
 
 .wrapper {
@@ -15,4 +19,38 @@
     .with-scroll {
         overflow-x: auto;
     }
+}
+
+.layout-home {
+    //
+}
+
+.layout-player {
+    position: relative;
+}
+
+.layout-viewer {
+    display: flex;
+    min-height: 300px;
+    &:only-child {
+        width: 100vw;
+        height: 100vh;
+    }
+}
+
+.layout-editor {
+    background-color: var(--ed-base);
+    min-width: fit-content;
+    &:only-child {
+        width: 100vw;
+        height: 100vh;
+    }
+}
+
+.layout-lab {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
 }

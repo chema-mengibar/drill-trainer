@@ -41,14 +41,13 @@ export default {
       const seqId = this.$route.query.id;
       if (seqId) {
         this.$services.toolService.fetchSeq(seqId).then((resp) => {
-          // success
           console.log(
             "[VIEWER] onLoad",
             this.$services.toolService.toRaw(resp)
           );
           this.s = this.$services.toolService.getSequence();
         });
-      }else{
+      } else {
         this.s = this.$services.toolService.getSequence();
       }
     },
@@ -79,6 +78,29 @@ export default {
 @import "../styles/media";
 @import "../styles/cards";
 
+.drill-info {
+  color: white;
+}
+
+.carrousel {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding:20px;
+  flex: 1;
+  overflow: auto;
+}
+
+.display-viewer {
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  margin-right:20px;
+}
+
+//----------------------
+
 .drill-container {
   width: 100%;
   height: auto;
@@ -87,11 +109,6 @@ export default {
   display: flex;
   padding: 10px;
   justify-content: start;
-}
-
-.drill-info {
-  color: white;
-  margin-left: 20px;
 }
 
 .hiddeDrill {
@@ -107,21 +124,6 @@ export default {
   color: white;
   cursor: pointer;
   margin-left: auto;
-}
-
-.carrousel {
-  width: 90%;
-  height: 100%;
-  overflow-x: auto;
-  display: flex;
-  gap: 10px;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
-  align-items: center;
 }
 
 .diapo {
@@ -166,7 +168,7 @@ export default {
 .mini-calc {
   min-height: 100px;
   font-family: var(--font-num);
-  color:white;
+  color: white;
   text-align: center;
   font-weight: 400;
   line-height: 100px;
@@ -196,65 +198,33 @@ export default {
   margin-bottom: 5px;
 }
 
-.display {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: transparent;
+.button-viewer {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 700;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.7);
+  height: 50px;
+  min-width: 80px;
+  cursor: pointer;
 
-  .display_header {
-    display: flex;
-    height: 50px;
-    gap: 5px;
-
-    .button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      color: rgba(0, 0, 0, 0.5);
-      font-weight: 700;
-      border: 1px dotted rgba(255, 255, 255, 0.7);
-      cursor: pointer;
-    }
-
-    .header_back-button {
-      height: 100%;
-      width: 7%;
-    }
-    .header_info {
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-    }
-    .header_view-button {
-      width: 7%;
-    }
+  &.back {
+    margin-bottom: auto;
   }
-}
-
-.viewer {
-  position: relative;
-  background-color: #bfbfbf;
-  flex: 1;
-  overflow: auto;
 }
 </style>
 
 <template>
-  <div class="viewer">
-     <div class="display">
-      <div class="display_header">
-        <div class="header_back-button button" @click="back">B</div>
-        <div class="header_view-button button" @click="fullScreen">F</div>
-        <div class="header_view-button button" @click="edit">Lab</div>
-        <div class="header_view-button button" @click="load">R</div>
-        <div class="header_view-button button" @click="showDrill">Drill</div>
-      </div>
+  <div class="layout-viewer">
+    <div class="display-viewer">
+      <div class="button-viewer back" @click="back">B</div>
+      <div class="button-viewer" @click="fullScreen">F</div>
+      <div class="button-viewer" @click="edit">Lab</div>
+      <div class="button-viewer" @click="load">Load</div>
+      <div class="button-viewer" @click="showDrill">Drill</div>
     </div>
     <template v-if="$services.toolService.getSequence()">
       <div class="carrousel">
@@ -319,7 +289,6 @@ export default {
               class="mini-counter"
               v-bind:key="`${frame.color}_${index}`"
               v-if="frame && frame.type === 'counter'"
-            
             >
               {{ frame.value }}
             </div>
@@ -339,15 +308,14 @@ export default {
       </div>
     </template>
 
-   
-
     <div v-if="isShowDrill" class="drill-container">
-      <img :src="$services.toolService.getImagePath(s.drill)" />
+      <img :title="s.drill" :alt="s.drill" :src="$services.toolService.getImagePath(s.drill)" />
       <div class="drill-info">
         {{ s.id }}
         <br />
         <h1>{{ s.name }}</h1>
         <p>{{ s.description }}</p>
+        <p>{{ s.drill }}</p>
       </div>
       <div class="hiddeDrill" @click="hiddeDrill">X</div>
     </div>

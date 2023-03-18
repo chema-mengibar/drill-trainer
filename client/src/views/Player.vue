@@ -23,19 +23,17 @@ export default {
     intervalInit: 0,
     countdown: 10,
     countdownDefault: 10,
-    flow: 'ready',
+    flow: "ready",
     useCountdown: true,
-    event: null
+    event: null,
   }),
   methods: {
-    player: function(){
-      if(this.flow === 'ready'){
+    player: function () {
+      if (this.flow === "ready") {
         this.init();
-      }
-      else if(this.flow === 'running'){
+      } else if (this.flow === "running") {
         this.pause();
-      }
-      else if(this.flow === 'paused'){
+      } else if (this.flow === "paused") {
         this.play();
       }
     },
@@ -50,39 +48,37 @@ export default {
       this.$router.push("/");
     },
     viewer: function () {
-      this.$router.push({ path: '/viewer', query: { id: this.s.id } })
+      this.$router.push({ path: "/viewer", query: { id: this.s.id } });
     },
     edit: function () {
-      this.$router.push({ path: '/lab', query: { id: this.s.id } })
+      this.$router.push({ path: "/lab", query: { id: this.s.id } });
     },
     init: function () {
       this.cursor = 0;
       this.countdown = this.countdownDefault;
       clearInterval(this.intervalInit);
-      if(this.useCountdown){
+      if (this.useCountdown) {
         this.intervalInit = setInterval(() => {
-            this.countdown--;
-            if (this.countdown <= 0) {
-              clearInterval(this.intervalInit);
-              this.play();
-            }
-          }, 1000);
-      }else{
-
+          this.countdown--;
+          if (this.countdown <= 0) {
+            clearInterval(this.intervalInit);
+            this.play();
+          }
+        }, 1000);
+      } else {
         this.play();
       }
     },
     next: function () {
-      if(this.cursor < this.s.frames.length - 1){
+      if (this.cursor < this.s.frames.length - 1) {
         this.cursor++;
-      }
-      else{
-        this.flow = 'ready'
+      } else {
+        this.flow = "ready";
         clearInterval(this.intervalFlowId);
       }
     },
     play: function () {
-      this.flow = 'running'
+      this.flow = "running";
       clearInterval(this.intervalFlowId);
       const currentFrame = toRaw(this.currentFrame);
       if (currentFrame) {
@@ -93,21 +89,21 @@ export default {
     },
     staticNext: function () {
       clearInterval(this.intervalFlowId);
-      this.flow = 'paused'
-       if(this.cursor < this.s.frames.length - 1){
+      this.flow = "paused";
+      if (this.cursor < this.s.frames.length - 1) {
         this.cursor++;
       }
     },
     staticPrev: function () {
       clearInterval(this.intervalFlowId);
-       this.flow = 'paused'
-      if(this.cursor < 1  ){
-        return
+      this.flow = "paused";
+      if (this.cursor < 1) {
+        return;
       }
       this.cursor--;
     },
     pause: function () {
-      this.flow = 'paused'
+      this.flow = "paused";
       clearInterval(this.intervalFlowId);
     },
   },
@@ -115,7 +111,6 @@ export default {
     this.t = this.$services.localeService.D();
   },
   mounted() {
-
     const _ = this;
     const seqId = this.$route.query.id;
 
@@ -126,7 +121,7 @@ export default {
     console.log("[Player] mounted:", seqId, toRaw(this.s));
     this.cursor = 0;
     //this.fullScreen()
-    document.addEventListener("keypress", function(event) {
+    document.addEventListener("keypress", function (event) {
       _.event = event.key; // keyCode
     });
   },
@@ -141,7 +136,7 @@ export default {
               Math.floor(Math.random() * (max - min + 1)) + min;
             return this.s.frames[this.cursor][selectedIdx];
           }
-        } 
+        }
         return this.s.frames[this.cursor][0];
       }
       return null;
@@ -157,7 +152,7 @@ export default {
     IconStop,
     IconBack,
     IconAvoid,
-    Spinner
+    Spinner,
   },
 };
 </script>
@@ -166,10 +161,13 @@ export default {
 @import "../styles/media";
 @import "../styles/cards";
 
+.frame-wrapper{
+  display:flex;
+}
 
-.flow{
+.flow {
   display: flex;
-  align-items:center;
+  align-items: center;
   gap: 10px;
 }
 
@@ -186,7 +184,7 @@ export default {
   font-family: var(--font-num);
 }
 
-.display {
+.display-player {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -194,64 +192,53 @@ export default {
   display: flex;
   flex-direction: column;
 
-  .display_header {
-    display:flex;
-    height: 50px;
-    gap:5px;
+  .display-player_header {
+    display: flex;
+    gap: 5px;
 
-    .button{
+    .header_info {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .button {
       display: flex;
       justify-content: center;
-      align-items:center;
+      align-items: center;
       font-size: 20px;
-      color: rgba(0,0,0, 0.5);
+      color: rgba(0, 0, 0, 0.5);
       font-weight: 700;
-      border: 1px dotted rgba(255,255,255, .7);
-      cursor:pointer;
-    }
-
-    .header_back-button {
-      height:100%;
-      width: 7%;
-    }
-    .header_info {
-      flex:1;
-      display: flex;;
-       justify-content: space-between;
-      align-items:center;
-      padding: 0 20px;
-
-    }
-    .header_view-button {
-     width: 7%;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.7);
+      height: 50px;
+      min-width: 80px;
+      cursor: pointer;
     }
   }
 
-  .display_control {
-
-    display:flex;
-    flex:1;
+  .display-player_control {
+    display: flex;
+    flex: 1;
 
     .control_left-area {
-      flex:1;
-      border-right: 1px dotted rgba(255,255,255, .7);
+      cursor: pointer;
+      flex: 1;
+      border-right: 1px dotted rgba(255, 255, 255, 0.7);
     }
     .control_center-area {
-      width:60%;
+      cursor: pointer;
+      width: 60%;
     }
     .control_right-area {
-
-      border-left: 1px dotted rgba(255,255,255, .7);
-      flex:1;
+      cursor: pointer;
+      border-left: 1px dotted rgba(255, 255, 255, 0.7);
+      flex: 1;
     }
   }
-}
-
-.player {
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-  position: relative;
 }
 
 .action {
@@ -268,7 +255,7 @@ export default {
   font-weight: 400;
   line-height: 100vh;
   flex: 1;
-  @include counter-colors ;
+  @include counter-colors;
 }
 
 .calc {
@@ -277,43 +264,43 @@ export default {
   text-align: center;
   font-weight: 400;
   line-height: 100vh;
-  font-size: 250px;
+  font-size: 30vw;
   letter-spacing: 10px;
   flex: 1;
   color: white;
   @include calc-colors;
 }
-
-
-video{
-  display:none;
-}
 </style>
 
 <template>
-  <div class="wrapper player">
-    <div v-if="countdown > 0 && useCountdown" class="countdown">{{ countdown }}</div>
+  <div class="layout-player frame-wrapper">
+    <div v-if="countdown > 0 && useCountdown" class="countdown">
+      {{ countdown }}
+    </div>
 
-    <div class="display">
-      <div class="display_header">
-        <div class="header_back-button button" @click="back">B</div>
+    <div class="display-player">
+      <div class="display-player_header">
+        <div class="button" @click="back">B</div>
         <div v-if="s" class="header_info">
           <div class="flow">
-            {{this.flow}} 
-            <Spinner v-if="flow == 'running'" />  
+            {{ this.flow }}
+            <Spinner v-if="flow == 'running'" />
           </div>
-          <div>event: {{event}} | </div>
-          <div>({{cursor}}) {{cursor+1}} of {{s.frames.length}}</div>
-          <div>dur. {{currentFrame.duration}}</div>
-            
+          <div>event: {{ event }} |</div>
+          <div>({{ cursor }}) {{ cursor + 1 }} of {{ s.frames.length }}</div>
+          <div>dur. {{ currentFrame.duration }}</div>
         </div>
-        <div class="header_view-button button"  @click="fullScreen">F</div>
-        <div class="header_view-button button"  @click="viewer">V</div>
-        <div class="header_view-button button"  @click="edit">E</div>
+        <div class="button" @click="fullScreen">F</div>
+        <div class="button" @click="viewer">V</div>
+        <div class="button" @click="edit">Lab</div>
       </div>
-      <div class="display_control">
+      <div class="display-player_control">
         <div class="control_left-area" v-on:click="staticPrev"></div>
-        <div class="control_center-area" v-on:dblclick="init" v-on:click="player"></div>
+        <div
+          class="control_center-area"
+          v-on:dblclick="init"
+          v-on:click="player"
+        ></div>
         <div class="control_right-area" v-on:click="staticNext"></div>
       </div>
     </div>
@@ -336,7 +323,11 @@ video{
           h="100%"
         />
         <IconRun v-if="currentFrame && div.icon === 'run'" w="100%" h="100%" />
-        <IconAvoid v-if="currentFrame && div.icon === 'avoid'" w="100%" h="100%" />
+        <IconAvoid
+          v-if="currentFrame && div.icon === 'avoid'"
+          w="100%"
+          h="100%"
+        />
         <IconPass
           v-if="currentFrame && div.icon === 'pass'"
           w="100%"
@@ -360,10 +351,7 @@ video{
       </div>
     </template>
 
-    <div
-      class="counter"
-      v-if="currentFrame && currentFrame.type === 'counter'"
-    >
+    <div class="counter" v-if="currentFrame && currentFrame.type === 'counter'">
       {{ currentFrame.value }}
     </div>
 

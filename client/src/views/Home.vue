@@ -62,8 +62,15 @@ export default {
 </style>
 
 <template>
-  <div class="wrapper with-scroll">
+  <div class="layout-home">
     <div class="collection">
+         <router-link
+        class="thumbnail"
+        :to="{ name: 'Lab'}"
+      >
+        +
+      </router-link>
+
       <router-link
         :to="{ name: 'Player', query: { id: sequenceItem.id } }"
         v-bind:key="sequenceItem.id"
@@ -71,20 +78,17 @@ export default {
         v-for="sequenceItem in list"
       >
         {{ sequenceItem.name }}
+        
         <img
           :src="$services.toolService.getImagePath(sequenceItem.drill)"
-          alt=""
+          :alt="sequenceItem.drill"
+          :title="sequenceItem.drill"
           width="300"
           height="300"
         />
       </router-link>
 
-      <router-link
-        class="thumbnail"
-        :to="{ name: 'Lab'}"
-      >
-        +
-      </router-link>
+   
     </div>
   </div>
 </template>

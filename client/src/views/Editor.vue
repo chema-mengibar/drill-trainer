@@ -27,7 +27,7 @@ export default {
       const subFrameIdx = event.target.getAttribute("data-subframe-idx");
       const divIdx = event.target.getAttribute("data-div-idx");
 
-      console.log(">>>>>", position, frameIdx, subFrameIdx, divIdx);
+      // console.log(">>>>>", position, frameIdx, subFrameIdx, divIdx);
 
       if (
         position === "none" &&
@@ -38,7 +38,7 @@ export default {
         this.$services.toolService.removeDiv({ frameIdx, subFrameIdx, divIdx });
         this.s = this.$services.toolService.getSequence();
         this.model.frames = this.s.frames;
-        console.log("[REMOVE] 1");
+        //console.log("[REMOVE] 1");
         return;
       }
 
@@ -51,7 +51,7 @@ export default {
         this.$services.toolService.removeSubFrame({ frameIdx, subFrameIdx });
         this.s = this.$services.toolService.getSequence();
         this.model.frames = this.s.frames;
-        console.log("[REMOVE] 2");
+        //console.log("[REMOVE] 2");
         return;
       }
 
@@ -64,7 +64,7 @@ export default {
         this.$services.toolService.removeFrame({ frameIdx });
         this.s = this.$services.toolService.getSequence();
         this.model.frames = this.s.frames;
-        console.log("[REMOVE] 3");
+        //console.log("[REMOVE] 3");
         return;
       }
     },
@@ -74,7 +74,7 @@ export default {
       const subFrameIdx = event.target.getAttribute("data-subframe-idx");
       const divIdx = event.target.getAttribute("data-div-idx");
 
-      console.log("[ADD] params: ", position, frameIdx, subFrameIdx, divIdx);
+      //console.log("[ADD] params: ", position, frameIdx, subFrameIdx, divIdx);
 
       if (
         (position === "before" || position === "last") &&
@@ -85,7 +85,7 @@ export default {
         this.$services.toolService.addSubFrameBefore({ frameIdx, subFrameIdx });
         this.s = this.$services.toolService.getSequence();
         this.model.frames = this.s.frames;
-        console.log("[ADD] 1");
+        //console.log("[ADD] 1");
         return;
       }
 
@@ -98,7 +98,7 @@ export default {
         this.$services.toolService.addFrameBefore();
         this.s = this.$services.toolService.getSequence();
         this.model.frames = this.s.frames;
-        console.log("[ADD] 2", toRaw(this.s));
+        //console.log("[ADD] 2", toRaw(this.s));
         return;
       }
 
@@ -108,7 +108,7 @@ export default {
         subFrameIdx !== null &&
         divIdx !== null
       ) {
-        console.log("[ADD] 3");
+        //console.log("[ADD] 3");
         this.$services.toolService.addDiv({ frameIdx, subFrameIdx, divIdx });
         this.s = this.$services.toolService.getSequence();
         this.model.frames = this.s.frames;
@@ -121,7 +121,7 @@ export default {
         subFrameIdx === null &&
         divIdx === null
       ) {
-        console.log("[ADD] 4");
+        //console.log("[ADD] 4");
         this.$services.toolService.addFrameAfterIdx({ frameIdx });
         this.s = this.$services.toolService.getSequence();
         this.model.frames = this.s.frames;
@@ -129,16 +129,11 @@ export default {
       }
     },
     async submit() {
-      var fd = new FormData();
-      fd.append("drill", this.$refs.file.files[0]);
-      fd.append("id", this.model.id);
-      fd.append("name", this.model.name);
-      fd.append("frames", this.model.frames);
-      fd.append("description", this.model.description);
 
-      console.log(fd);
 
-      this.$services.toolService.saveSeq(toRaw(this.model)).then((resp) => {
+      const file = this.$refs.drill.files[0];
+
+      this.$services.toolService.saveSeq(toRaw(this.model), file).then((resp) => {
         this.status = resp.status + " " + resp.statusText;
       });
     },
@@ -160,15 +155,15 @@ export default {
         this.model.description = this.s.description;
         this.model.frames = this.s.frames;
       });
-    }else{
+    } else {
       // create new
 
       this.s = this.$services.toolService.create();
       this.model.id = this.s.id;
-        this.model.name = this.s.name;
-        this.model.drill = this.s.drill;
-        this.model.description = this.s.description;
-        this.model.frames = this.s.frames;
+      this.model.name = this.s.name;
+      this.model.drill = this.s.drill;
+      this.model.description = this.s.description;
+      this.model.frames = this.s.frames;
     }
   },
   computed: {
@@ -196,6 +191,7 @@ export default {
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+  transform: scale(0.8);
 }
 
 .loop-frames {
@@ -212,7 +208,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius:8px;
+  border-radius: 8px;
 }
 
 .obj-frame-child {
@@ -225,7 +221,7 @@ export default {
 .obj-subframe {
   background-color: var(--ed-subframe-bg);
   padding: 10px;
-  border-radius:6px;
+  border-radius: 6px;
 }
 
 .labels-group {
@@ -252,7 +248,7 @@ export default {
   padding: 10px;
   display: flex;
   flex-direction: column;
-border-radius:4px;
+  border-radius: 4px;
   label {
     margin: 10px 10px 2px;
   }
@@ -320,14 +316,7 @@ button.submit {
   color: var(--ed-button-submit-text);
   padding: 20px;
   margin: 20px;
-  border-radius:8px;
-}
-
-.frame-editor {
-  flex: 1;
-  overflow: auto;
-  background-color: var(--ed-base);
-  color: var(--ed-base-text);
+  border-radius: 8px;
 }
 
 .status {
@@ -338,27 +327,36 @@ button.submit {
   margin-bottom: 20px;
 }
 
-.form-row{
-  margin-bottom:7px;
-  label{
-    width:100px;
-    display:inline-block;
-    margin:0 20px;
+.form-row {
+  margin-bottom: 7px;
+  label {
+    width: 100px;
+    display: inline-block;
+    margin: 0 20px;
+    color: var(--ed-base-text);
   }
 
   input {
     height: 36px;
     font-size: 16px;
-    padding:7px;
+    padding: 7px;
+    background: rgba(255,255,255,.5);
+    border: none;
+
+    &:focus-visible{
+      border: 1px solid white;
+      outline:none;
+    }
+    
   }
 }
 </style>
 
 <template>
-  <div class="frame-editor">
+  <div class="layout-editor">
     <div v-if="status" class="status">{{ status }}</div>
 
-    <form @submit.prevent="submit" novalidate>
+    <form @submit.prevent="submit" novalidate enctype="multipart/form-data">
       <button type="submit" class="submit">Save</button>
 
       <div class="form-row">
@@ -371,7 +369,7 @@ button.submit {
       </div>
       <div class="form-row">
         <label>Drill</label>
-        <input type="file" id="file" ref="file" />
+        <input type="file" id="drill" ref="drill" />
       </div>
       <div class="form-row">
         <label>Description</label>
@@ -379,7 +377,8 @@ button.submit {
       </div>
 
       <div v-if="s" class="canvas">
-        <button type="button"
+        <button
+          type="button"
           class="add-frame"
           data-position="before"
           :data-frame-idx="null"
@@ -395,7 +394,8 @@ button.submit {
           v-for="(frame, indF) in currentFrames"
         >
           <div class="obj-frame">
-            <button type="button"
+            <button
+              type="button"
               class="remove-frame"
               v-on:click="remove($event)"
               data-position="none"
@@ -408,7 +408,8 @@ button.submit {
               v-for="(subframe, indSf) in frame"
               v-bind:key="`${subframe.id}`"
             >
-              <button type="button"
+              <button
+                type="button"
                 class="add-subframe"
                 data-position="before"
                 :data-frame-idx="indF"
@@ -420,7 +421,7 @@ button.submit {
 
               <div class="obj-subframe">
                 <button
-                type="button"
+                  type="button"
                   class="remove-subframe"
                   v-on:click="remove($event)"
                   data-position="none"
@@ -488,7 +489,8 @@ button.submit {
                       :data-subframe-idx="indSf"
                       :data-div-idx="indD"
                     >
-                      <button type="button"
+                      <button
+                        type="button"
                         class="remove-div"
                         v-on:click="remove($event)"
                         data-position="none"
@@ -513,7 +515,8 @@ button.submit {
                       />
                     </div>
                   </div>
-                  <button type="button"
+                  <button
+                    type="button"
                     class="add-div"
                     v-on:click="add($event)"
                     data-position="last"
@@ -528,7 +531,8 @@ button.submit {
               </div>
             </div>
 
-            <button type="button"
+            <button
+              type="button"
               class="add-subframe"
               data-position="last"
               :data-frame-idx="indF"
@@ -538,7 +542,8 @@ button.submit {
               +
             </button>
           </div>
-          <button type="button"
+          <button
+            type="button"
             class="add-frame"
             data-position="after"
             :data-frame-idx="currentFrames.length"
