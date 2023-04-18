@@ -26,10 +26,19 @@ export default {
       }
     },
     back: function () {
-      this.$router.push({ path: "/player", query: { id: this.s.id } });
+      if(this.s){
+        this.$router.push({ path: "/player", query: { id: this.s.id } });
+      }
+      else{
+        this.load().then(()=>{
+          this.back();
+        })
+      }
     },
     edit: function () {
-      this.$router.push({ path: "/lab", query: { id: this.s.id } });
+      if(this.s){
+       this.$router.push({ path: "/lab", query: { id: this.s.id } });
+      }
     },
     showDrill: function () {
       this.isShowDrill = true;
@@ -37,7 +46,7 @@ export default {
     hiddeDrill: function () {
       this.isShowDrill = false;
     },
-    load: function () {
+    async load () {
       const seqId = this.$route.query.id;
       if (seqId) {
         this.$services.toolService.fetchSeq(seqId).then((resp) => {

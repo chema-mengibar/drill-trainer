@@ -12,15 +12,30 @@ export default {
     t: {},
     s: undefined,
     status: null,
+    showModal: false,
     model: {
       id: "",
       name: "",
       drill: null,
       description: "",
+      useLoop: '0',
+      useUserInteraction: '1',
       frames: [],
     },
   }),
   methods: {
+    setDrill: function( drillname ){
+      this.model.drill = drillname;
+      this.showModal = false;
+    },
+    openModalDrill: function(  ){
+
+      this.showModal = true;
+    },
+    closeModalDrill: function(  ){
+
+      this.showModal = false;
+    },
     remove: function (event) {
       const position = event.target.getAttribute("data-position"); // before, after, last
       const frameIdx = event.target.getAttribute("data-frame-idx");
@@ -129,13 +144,13 @@ export default {
       }
     },
     async submit() {
+      const file = null // this.$refs.drill.files[0];
 
-
-      const file = this.$refs.drill.files[0];
-
-      this.$services.toolService.saveSeq(toRaw(this.model), file).then((resp) => {
-        this.status = resp.status + " " + resp.statusText;
-      });
+      this.$services.toolService
+        .saveSeq(toRaw(this.model), file)
+        .then((resp) => {
+          this.status = resp.status + " " + resp.statusText;
+        });
     },
   },
   created() {
@@ -146,6 +161,13 @@ export default {
     const _ = this;
     const seqId = this.$route.query.id;
 
+    this.$services.toolService.fetchImages().then((resp) => {
+      console.log(
+        "[EDITOR] images:",
+        this.$services.toolService.getImagesAsRaw()
+      );
+    });
+
     if (seqId) {
       this.$services.toolService.fetchSeq(seqId).then((resp) => {
         this.s = this.$services.toolService.getSequence();
@@ -154,6 +176,8 @@ export default {
         this.model.drill = this.s.drill;
         this.model.description = this.s.description;
         this.model.frames = this.s.frames;
+        this.model.useLoop = this.s.useLoop;
+        this.model.useUserInteraction = this.s.useUserInteraction;
       });
     } else {
       // create new
@@ -164,6 +188,8 @@ export default {
       this.model.drill = this.s.drill;
       this.model.description = this.s.description;
       this.model.frames = this.s.frames;
+      this.model.useLoop = this.s.useLoop;
+      this.model.useUserInteraction = this.s.useUserInteraction;
     }
   },
   computed: {
@@ -340,14 +366,61 @@ button.submit {
     height: 36px;
     font-size: 16px;
     padding: 7px;
-    background: rgba(255,255,255,.5);
+    background: rgba(255, 255, 255, 0.5);
     border: none;
 
-    &:focus-visible{
+    &:focus-visible {
       border: 1px solid white;
-      outline:none;
+      outline: none;
     }
-    
+  }
+}
+
+.drill-modal {
+  position: absolute;
+  height: 100%;
+  width: 90%;
+  background-color: rgb(63, 63, 63);
+  z-index: 1000;
+  color: white;
+  top: 0;
+  left: 0;
+
+
+  .drill {
+    display: flex;
+    flex-wrap: wrap;
+    flex:1;
+    gap:20px;
+
+    .mini-drill {
+      border: 1px solid white;
+      padding: 10px;
+      display:flex;
+      flex-direction: column;
+      height: max-content;
+      cursor:pointer;
+      img{
+        width:100%;
+        height: auto;
+        max-width: 150px;
+      }
+    }
+  }
+
+  .hiddeDrill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.5);
+    font-weight: 700;
+    border: 1px dotted rgba(255, 255, 255, 0.7);
+    height: 50px;
+    width: 50px;
+    color: white;
+    cursor: pointer;
+    margin-left: auto;
   }
 }
 </style>
@@ -369,11 +442,26 @@ button.submit {
       </div>
       <div class="form-row">
         <label>Drill</label>
-        <input type="file" id="drill" ref="drill" />
+        <!-- <input type="file" id="drill" ref="drill" /> -->
+        <input v-on:click="openModalDrill" readonly v-model="model.drill" />
       </div>
       <div class="form-row">
         <label>Description</label>
         <input v-model="model.description" />
+      </div>
+      <div class="form-row">
+        <label>Loop?</label>
+        <select v-model="model.useLoop">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Interaction?</label>
+        <select v-model="model.useUserInteraction">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
       </div>
 
       <div v-if="s" class="canvas">
@@ -554,5 +642,25 @@ button.submit {
         </div>
       </div>
     </form>
+
+    <div class="drill-modal" v-if="showModal">
+      <div class="hiddeDrill" @click="closeModalDrill">X</div>
+      <div class="drill" v-if="$services.toolService.getImages().length > 0">
+        <div
+          class="mini-drill"
+          v-on:click="setDrill(img)"
+          v-for="(img, i) of $services.toolService.getImagesAsRaw()"
+          :key="i"
+        >
+          <img
+            :title="img"
+            :alt="img"
+            :src="$services.toolService.getImagePath(img)"
+          />
+          <span>{{ img }}</span>
+        </div>
+      </div>
+      
+    </div>
   </div>
 </template>

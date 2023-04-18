@@ -2,7 +2,7 @@
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: *');
-//header('Content-Type: application/json');
+header('Content-Type: application/json');
 
 // for json send
 //$data = json_decode(file_get_contents('php://input'), true);
@@ -13,33 +13,35 @@ header('Access-Control-Allow-Headers: *');
 $id = $_POST['id'];
 $name = $_POST['name'];
 $description = $_POST['description'];
+$drill = $_POST['drill'];
+$useLoop = $_POST['useLoop'];
+$useUserInteraction = $_POST['useUserInteraction'];
 $frames = json_decode($_POST['frames']);
 
 
 $filename = '';
-$upload = '';
+$upload = 'no';
 
-if (isset($_FILES['drill'])) {
-  $filename = $_FILES['drill']['name'];
-  //$path = './'.'images'.'/';
-  $path = 'images'.'/';
-  $pathAndName = $path.$filename;
-  $fileTmp = $_FILES['files']['tmp_name'];
-  if(is_writable($path)){
-    move_uploaded_file($fileTmp, $pathAndName);
-    $upload = $pathAndName;
-  }else{
-    $upload = 'error_write';
-  }
- 
-}
+
+// // FILE UPLOAD
+// if (isset($_FILES['drill'])) {
+//   $filename = $_FILES['drill']['name'];
+//   $pathAndName = sprintf(__DIR__ .'/%s.%s',  sha1_file($_FILES['drill']['name']),  'png');
+//   if (move_uploaded_file($_FILES['files']['tmp_name'], $pathAndName)){
+//     $upload = $pathAndName;
+//   }else{
+//     $upload = 'error: '.$pathAndName;
+//   };
+// }
 
 
 $arr = array(
   'id' => $id,
   'description' => $description,
+  'useUserInteraction' => $useUserInteraction,
+  'useLoop' => $useLoop,
   'name' => $name,
-  'drill' => $filename,
+  'drill' => $drill, //$filename,
   'frames' => $frames
 );
 

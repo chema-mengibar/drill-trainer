@@ -6,8 +6,10 @@ export default class ToolService {
     domain = '//drill-trainer-server.motuo.info'
 
     sequences = []
+
     data = reactive({
-        sequence: null
+        sequence: null,
+        images: []
     })
 
 
@@ -22,6 +24,14 @@ export default class ToolService {
         return this.data.sequence;
     }
 
+    getImages() {
+        return this.data.images;
+    }
+
+    getImagesAsRaw() {
+        return toRaw(this.data.images);
+    }
+
 
 
     getSequenceById(id) {
@@ -30,6 +40,30 @@ export default class ToolService {
 
     getImagePath(fileName) {
         return `${this.domain}/images/${fileName}`
+    }
+
+    async fetchImages() {
+        return fetch(`${this.domain}/images.php`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((res) => {
+                return res.json()
+            })
+            .then((jsonResponse) => {
+                if (jsonResponse.data) {
+                    this.data.images = Object.entries(jsonResponse.data).map(oe => {
+                        return oe[1];
+                    })
+
+                    return this.data.images;
+                }
+            }, (error) => {
+                console.error('[ToolService] fetchImages:', error)
+            })
     }
 
     async fetchSeqs() {
@@ -52,6 +86,8 @@ export default class ToolService {
                 console.error('[ToolService] fetchSeqs:', error)
             })
     }
+
+
 
     async fetchSeq(id, useDemoData = false) {
         if (useDemoData) {
@@ -112,11 +148,14 @@ export default class ToolService {
         this.data.sequence = data;
 
         var fd = new FormData();
-        fd.append("drill", file);
+        // fd.append("drill", file);
         fd.append("id", data.id);
         fd.append("name", data.name);
+        fd.append("drill", data.drill);
         fd.append("frames", JSON.stringify(data.frames));
         fd.append("description", data.description);
+        fd.append("useLoop", data.useLoop);
+        fd.append("useUserInteraction", data.useUserInteraction);
 
 
         return fetch(`${this.domain}/save.php`, {

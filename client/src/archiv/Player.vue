@@ -9,7 +9,7 @@ import IconStop from "../components/action-icons/icon-stop-control.vue";
 import IconBack from "../components/action-icons/icon-back.vue";
 import IconAvoid from "../components/action-icons/icon-avoid.vue";
 import Spinner from "../components/spinner.vue";
-import { toRaw } from "vue";
+import { isProxy, toRaw } from "vue";
 
 export default {
   name: "Player",
@@ -17,96 +17,91 @@ export default {
   data: () => ({
     t: {},
     s: undefined,
+
     countdown: 2,
     countdownDefault: 2,
+
     cursor: 0,
-    intervalInit: 0,
+    timer: 0,
     intervalFlowId: 0,
+    intervalInit: 0,
+    keyPlayLast: 0,
+    keyCounter: 0,
+    keyTimeout: 0,
+
     flow: "init",
     useCountdown: true,
+    useLoop: true,
     useUserInteraction: true,
-    useLoop: false,
+
     event: null,
   }),
   methods: {
-    doAction: function (action) {
-      if (action === "play") {
-        if (this.flow === "init" || this.flow === "finish") {
-          this.init();
-        }
-
-        else if (this.useUserInteraction) {
-          this.flow = "running"
-          clearInterval(this.intervalFlowId);
-          this.next();
-          return;
-        }
-
-        if (this.flow === "running") {
-          this.flow = "paused";
-          clearInterval(this.intervalFlowId);
-        } else if (this.flow === "paused") {
-          this.play();
-        }
-
-      } else if (action === "prev") {
-        this.flow = "paused";
-        clearInterval(this.intervalFlowId);
-        this.prev();
-      } else if (action === "next") {
-        this.flow = "paused";
-        clearInterval(this.intervalFlowId);
-        this.next();
-      }
-    },
     init: function () {
       this.cursor = 0;
-      if (this.useCountdown) {
-        this.countdown = this.countdownDefault;
-        clearInterval(this.intervalInit);
-        this.intervalInit = setInterval(() => {
-          this.countdown--;
-          if (this.countdown <= 0) {
-            clearInterval(this.intervalInit);
+      this.countdown = this.countdownDefault;
+      clearInterval(this.intervalInit);
+      this.intervalInit = setInterval(() => {
+        this.countdown--;
+        if (this.countdown <= 0) {
+          clearInterval(this.intervalInit);
+  
             this.play();
-          }
-        }, 1000);
-      } else {
+
+        }
+      }, 1000);
+    },
+    inputPlay: function () {
+      console.log("[] inputPlay");
+      if (this.flow === "init" || this.flow === "finish") {
+        this.init();
+      }
+      //
+      else if (this.flow === "running") {
+        this.flow = "paused";
+        clearInterval(this.intervalFlowId);
+      }
+      //
+      else if (this.flow === "paused") {
+
         this.play();
       }
     },
-    play: function () {
-      this.flow = "running";
-      clearInterval(this.intervalFlowId);
 
-      if (!this.useUserInteraction) {
-        const currentFrame = toRaw(this.currentFrame);
-        if (currentFrame) {
-          this.intervalFlowId = setInterval(() => {
-            this.next();
-          }, currentFrame.duration * 1000);
-        }
-      }
-    },
     prev: function () {
+      this.flow = "paused";
       if (this.cursor < 1) {
         return;
       }
       this.cursor--;
     },
+    play: function () {
+        this.flow = "running";
+        clearInterval(this.intervalFlowId);
+        const currentFrame = toRaw(this.currentFrame);
+        if (currentFrame && !this.useUserInteraction) {
+          this.intervalFlowId = setInterval(() => {
+            this.next();
+          }, currentFrame.duration * 1000);
+        }
+  
+    },
+
     next: function () {
+      console.log("[NEXT]");
+
       if (this.cursor < this.s.frames.length - 1) {
         this.cursor++;
- 
       } else {
         if (this.useLoop) {
           this.cursor = 0;
-
           return;
         }
         this.flow = "finish";
+        clearInterval(this.intervalFlowId);
       }
     },
+
     fullScreen: function () {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen();
@@ -139,22 +134,20 @@ export default {
       //179 MediaPlayPause
       //177 MediaTrackPrevious
       if (event.key === "MediaTrackNext") {
-        _.doAction("next");
+        _.inputPlayTriggered("next");
       } else if (event.key === "MediaPlayPause") {
-        _.doAction("play");
+        _.inputPlayTriggered("play");
       } else if (event.key === "MediaTrackPrevious") {
-        _.doAction("prev");
+        _.inputPlayTriggered("prev");
       }
     });
 
+    if (this.useUserInteraction) {
+      this.useLoop = false;
+    }
+
     this.$services.toolService.fetchSeq(seqId).then((resp) => {
       this.s = resp;
-      
-      this.useLoop = resp.useLoop === '1';
-      this.useUserInteraction = resp.useUserInteraction === '1';
-
-      console.log('loop', this.useLoop);
-      console.log('interaction', this.useUserInteraction);
     });
 
     console.log("[Player] mounted:", seqId);
@@ -314,11 +307,6 @@ export default {
 
 <template>
   <div class="layout-player frame-wrapper">
-
-    <div v-if="flow==='finish'" class="countdown">
-      END
-    </div>
-
     <div v-if="countdown > 0 && useCountdown" class="countdown">
       {{ countdown }}
     </div>
@@ -340,9 +328,18 @@ export default {
         <div class="button" @click="edit">Lab</div>
       </div>
       <div class="display-player_control">
-        <div class="control_left-area" v-on:click="doAction('prev')"></div>
-        <div class="control_center-area" v-on:click="doAction('play')"></div>
-        <div class="control_right-area" v-on:click="doAction('next')"></div>
+        <div
+          class="control_left-area"
+          v-on:click="inputPlayTriggered('prev')"
+        ></div>
+        <div
+          class="control_center-area"
+          v-on:click="inputPlayTriggered('play')"
+        ></div>
+        <div
+          class="control_right-area"
+          v-on:click="inputPlayTriggered('next')"
+        ></div>
       </div>
     </div>
 

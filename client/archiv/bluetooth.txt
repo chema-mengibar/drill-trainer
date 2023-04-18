@@ -1,0 +1,69 @@
+const audio = document.querySelector("audio");
+
+    audio.addEventListener("volumechange", (event) => {
+      _.log("The volume changed.");
+    });
+
+    audio.addEventListener("play", (event) => {
+      _.log("The play changed.");
+    });
+
+
+
+
+     <audio
+      controls
+      class="audio"
+      src="http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3"
+    ></audio>
+
+
+
+
+
+        add: function () {
+      const _ = this;
+
+      const nbt = navigator && navigator.bluetooth ? "yes" : "no";
+      _.log("click");
+      _.log(nbt);
+
+      navigator.bluetooth
+        .requestDevice({
+          filters: [
+            {
+              manufacturerData: [
+                {
+                  companyIdentifier: 0x00e0,
+                  dataPrefix: new Uint8Array([0x01, 0x02]),
+                },
+              ],
+            },
+          ],
+          optionalServices: ["battery_service"], // Required to access service later.
+        })
+        .then((device) => {
+          /* … */
+        })
+        .catch((error) => {
+          _.log(error);
+        });
+
+      //   navigator.bluetooth.getAvailability().then((isBluetoothAvailable) => {
+      //     _._log(
+      //       `> Bluetooth is ${isBluetoothAvailable ? "available" : "unavailable"}`
+      //     );
+      //   });
+
+      //   if ("onavailabilitychanged" in navigator.bluetooth) {
+      //     navigator.bluetooth.addEventListener(
+      //       "availabilitychanged",
+      //       function (event) {
+      //         _.log(
+      //           `> Bluetooth is ${event.value ? "available" : "unavailable"}`
+      //         );
+      //       }
+      //     );
+      //   }
+    },
+  },
