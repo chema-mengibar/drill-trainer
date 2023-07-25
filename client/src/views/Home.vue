@@ -66,7 +66,7 @@ export default {
     <div class="collection">
          <router-link
         class="thumbnail"
-        :to="{ name: 'Lab'}"
+        :to="{ name: 'Editor'}"
       >
         +
       </router-link>

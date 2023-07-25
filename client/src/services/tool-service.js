@@ -271,7 +271,12 @@ export default class ToolService {
     }
 
     create() {
-        const unique = `new-${Date.now()}`;
+        
+        const datum = new Date().toISOString();
+        const modDatum = datum.replace('T','_').replaceAll(':','-').split('.')[0]
+        
+        const unique = `drill_${modDatum}`;
+
         const dummy = {
             id: unique,
             name: unique,

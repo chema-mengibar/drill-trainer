@@ -395,6 +395,7 @@ button.submit {
 
   input {
     height: 36px;
+    width:250px;
     font-size: 16px;
     padding: 7px;
     background: rgba(255, 255, 255, 0.5);
@@ -413,13 +414,15 @@ button.submit {
 
 .drill-modal {
   position: absolute;
-  height: 100%;
-  width: 90%;
+  height: 80%;
+  width: 80%;
   background-color: rgb(63, 63, 63);
   z-index: 1000;
   color: white;
-  top: 0;
-  left: 0;
+  top: 20px;
+  left:20px;
+  overflow: auto;
+  padding:10px;
 
   .drill {
     display: flex;
@@ -428,7 +431,7 @@ button.submit {
     gap: 20px;
 
     .mini-drill {
-      border: 1px solid white;
+      border: 1px solid rgba(255,255,255,.2);
       padding: 10px;
       display: flex;
       flex-direction: column;
@@ -438,6 +441,7 @@ button.submit {
         width: 100%;
         height: auto;
         max-width: 150px;
+        margin-bottom:7px;
       }
     }
   }
@@ -447,11 +451,9 @@ button.submit {
     justify-content: center;
     align-items: center;
     font-size: 20px;
-    color: rgba(0, 0, 0, 0.5);
     font-weight: 700;
-    border: 1px dotted rgba(255, 255, 255, 0.7);
-    height: 50px;
-    width: 50px;
+    height: 20px;
+    width: 20px;
     color: white;
     cursor: pointer;
     margin-left: auto;
