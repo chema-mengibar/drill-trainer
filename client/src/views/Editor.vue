@@ -463,9 +463,7 @@ button.submit {
 .drill-preview{
   height: 120px;
   img {
-      
-      height: auto;
-
+      height: 100%;
     }
 }
 </style>
