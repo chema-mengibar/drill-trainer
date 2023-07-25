@@ -395,7 +395,7 @@ button.submit {
 
   input {
     height: 36px;
-    width:250px;
+    width: 250px;
     font-size: 16px;
     padding: 7px;
     background: rgba(255, 255, 255, 0.5);
@@ -420,9 +420,9 @@ button.submit {
   z-index: 1000;
   color: white;
   top: 20px;
-  left:20px;
+  left: 20px;
   overflow: auto;
-  padding:10px;
+  padding: 10px;
 
   .drill {
     display: flex;
@@ -431,7 +431,7 @@ button.submit {
     gap: 20px;
 
     .mini-drill {
-      border: 1px solid rgba(255,255,255,.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       padding: 10px;
       display: flex;
       flex-direction: column;
@@ -441,7 +441,7 @@ button.submit {
         width: 100%;
         height: auto;
         max-width: 150px;
-        margin-bottom:7px;
+        margin-bottom: 7px;
       }
     }
   }
@@ -459,6 +459,15 @@ button.submit {
     margin-left: auto;
   }
 }
+
+.drill-preview{
+  height: 120px;
+  img {
+      
+      height: auto;
+
+    }
+}
 </style>
 
 <template>
@@ -468,6 +477,7 @@ button.submit {
         <div class="button-back" @click="back">Back</div>
         <button type="submit" class="submit">Save - {{ status }}</button>
       </div>
+
 
       <div class="form-row">
         <label>Id</label>
@@ -480,6 +490,13 @@ button.submit {
       <div class="form-row">
         <label>Drill</label>
         <input v-on:click="openModalDrill" readonly v-model="model.drill" />
+        <div class="drill-preview">
+          <img
+            :title="model.drill"
+            :alt="model.drill"
+            :src="$services.toolService.getImagePath(model.drill)"
+          />
+        </div>
       </div>
       <div class="form-row">
         <label>Description</label>
