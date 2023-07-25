@@ -10,8 +10,9 @@
     /* color */
     --c-blue: #033BFF;
     --c-red: #FF0000;
-    --c-yellow: #FFE600;
+    --c-yellow: #eeff00;
     --c-green: #20D31C;
+    --c-orange: #ffa600;
     // --app-color: linear-gradient(180deg, #6C7BA7 0%, #242C43 37.4%, #141D38 53.66%);
     --app-color: #e7e7e7;
     --button-color: 76, 66, 135;
@@ -35,15 +36,18 @@
     /* editor */
     --ed-base: #333131;
     --ed-base-text: #fdfdfd;
-    --ed-frame-bg: rgba(146, 146, 146, 0.356);
-    --ed-subframe-bg: rgba(194, 194, 194, 0.288);
-    --ed-div-bg: rgba(0, 0, 0, 0.226);
+    --ed-frame-bg: rgba(83, 83, 83, 0.356);
+    --ed-frame-border: rgba(255,255,255, .1);
+    --ed-frame-color: white;
+    --ed-subframe-bg: rgba(113, 113, 113, 0.288);
+    --ed-subframe-border: rgba(113, 113, 113, 0.288);
+    --ed-div-bg: transparent;
     --ed-button-add-base: transparent;
     --ed-button-remove-base: transparent;
     --ed-button-remove: #d87a0fcc;
-    --ed-button-add_frame: #00d9ff86;
-    --ed-button-add_subframe: #00d9ff86;
-    --ed-button-add_div: #00d9ff86;
+    --ed-button-add_frame: #00d9ff73;
+    --ed-button-add_subframe: #00d9ff59;
+    --ed-button-add_div: #00d9ff5d;
     --ed-button-submit: rgb(226, 8, 143);
     --ed-button-submit-text: rgb(255, 255, 255);
 }

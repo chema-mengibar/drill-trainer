@@ -10,7 +10,7 @@ export default {
     },
   },
   data: () => ({
-    options: ["red", "green", "blue", "yellow"],
+    options: ["red", "green", "blue", "yellow", 'orange'],
     selected: null,
     open: false,
   }),

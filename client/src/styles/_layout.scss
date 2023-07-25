@@ -40,12 +40,12 @@ body {
 
 .layout-editor {
     background-color: var(--ed-base);
-    min-width: fit-content;
+    position:relative;
+    overflow: auto;
     &:only-child {
         width: 100vw;
         height: 100vh;
     }
-    position:relative;
 }
 
 .layout-lab {

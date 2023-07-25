@@ -121,7 +121,7 @@ export default {
       this.$router.push({ path: "/viewer", query: { id: this.s.id } });
     },
     edit: function () {
-      this.$router.push({ path: "/lab", query: { id: this.s.id } });
+      this.$router.push({ path: "/editor", query: { id: this.s.id } });
     },
   },
   created() {
@@ -337,7 +337,7 @@ export default {
         </div>
         <div class="button" @click="fullScreen">F</div>
         <div class="button" @click="viewer">V</div>
-        <div class="button" @click="edit">Lab</div>
+        <div class="button" @click="edit">Ed</div>
       </div>
       <div class="display-player_control">
         <div class="control_left-area" v-on:click="doAction('prev')"></div>

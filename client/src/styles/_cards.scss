@@ -20,6 +20,10 @@
         background-color: var(--c-red);
         color: white;
     }
+    &.orange {
+        background-color: var(--c-orange);
+        color: black;
+    }
 }
 
 @mixin calc-colors {
@@ -39,6 +43,10 @@
     &.red {
         background-color: var(--c-red);
         color: white;
+    }
+    &.orange {
+        background-color: var(--c-orange);
+        color: black;
     }
 }
 

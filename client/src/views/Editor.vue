@@ -1,9 +1,10 @@
 <script>
+import IconContentIcon from "../components/action-content-icon.vue";
 import SelectType from "../components/select-type.vue";
 import SelectColor from "../components/select-color.vue";
 import SelectAction from "../components/select-action.vue";
 import ButtonAccentBig from "../components/buttons/button-accent-big.vue";
-import { watchEffect, ref, defineComponent, isProxy, toRaw } from "vue";
+import { toRaw } from "vue";
 
 export default {
   name: "FrameEditor",
@@ -18,22 +19,20 @@ export default {
       name: "",
       drill: null,
       description: "",
-      useLoop: '0',
-      useUserInteraction: '1',
+      useLoop: "0",
+      useUserInteraction: "1",
       frames: [],
     },
   }),
   methods: {
-    setDrill: function( drillname ){
+    setDrill: function (drillname) {
       this.model.drill = drillname;
       this.showModal = false;
     },
-    openModalDrill: function(  ){
-
+    openModalDrill: function () {
       this.showModal = true;
     },
-    closeModalDrill: function(  ){
-
+    closeModalDrill: function () {
       this.showModal = false;
     },
     remove: function (event) {
@@ -144,13 +143,18 @@ export default {
       }
     },
     async submit() {
-      const file = null // this.$refs.drill.files[0];
-
+      const file = null; // this.$refs.drill.files[0];
+      this.status = null;
       this.$services.toolService
         .saveSeq(toRaw(this.model), file)
         .then((resp) => {
           this.status = resp.status + " " + resp.statusText;
         });
+    },
+    back: function () {
+      if (this.s) {
+        this.$router.push({ path: "/player", query: { id: this.s.id } });
+      }
     },
   },
   created() {
@@ -205,17 +209,45 @@ export default {
     SelectColor,
     SelectAction,
     ButtonAccentBig,
+    IconContentIcon,
   },
 };
 </script>
 
 <style  lang="scss">
 @import "../styles/media";
+@import "../styles/cards";
+
+.controls {
+  display: flex;
+  padding: 20px;
+  gap: 40px;
+}
+
+button.submit {
+  background-color: var(--ed-button-submit);
+  color: var(--ed-button-submit-text);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.button-back {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
 .canvas {
   display: flex;
   align-items: center;
-  justify-content: center;
   margin-top: 20px;
   transform: scale(0.8);
 }
@@ -235,6 +267,8 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 8px;
+  color: var(--ed-frame-color);
+  border: 1px solid var(--ed-frame-border);
 }
 
 .obj-frame-child {
@@ -248,6 +282,7 @@ export default {
   background-color: var(--ed-subframe-bg);
   padding: 10px;
   border-radius: 6px;
+  border: 1px solid var(--ed-subframe-border);
 }
 
 .labels-group {
@@ -276,8 +311,19 @@ export default {
   flex-direction: column;
   border-radius: 4px;
   label {
-    margin: 10px 10px 2px;
+    margin: 10px 10px 2px 0;
   }
+}
+
+.obj-div_header {
+  display: flex;
+  gap: 7px;
+}
+
+.miniature-action {
+  height: 40px;
+  width: 60px;
+  @include action-colors;
 }
 
 .obj-x-label {
@@ -303,6 +349,7 @@ export default {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  font-size: 20px;
 }
 
 .remove-frame,
@@ -337,22 +384,6 @@ export default {
   color: var(--ed-button-add_div);
 }
 
-button.submit {
-  background-color: var(--ed-button-submit);
-  color: var(--ed-button-submit-text);
-  padding: 20px;
-  margin: 20px;
-  border-radius: 8px;
-}
-
-.status {
-  background-color: grey;
-  color: white;
-  padding: 20px;
-  width: 100px;
-  margin-bottom: 20px;
-}
-
 .form-row {
   margin-bottom: 7px;
   label {
@@ -373,6 +404,10 @@ button.submit {
       border: 1px solid white;
       outline: none;
     }
+
+    &:read-only {
+      background: rgba(255, 255, 255, 0.267);
+    }
   }
 }
 
@@ -386,22 +421,21 @@ button.submit {
   top: 0;
   left: 0;
 
-
   .drill {
     display: flex;
     flex-wrap: wrap;
-    flex:1;
-    gap:20px;
+    flex: 1;
+    gap: 20px;
 
     .mini-drill {
       border: 1px solid white;
       padding: 10px;
-      display:flex;
+      display: flex;
       flex-direction: column;
       height: max-content;
-      cursor:pointer;
-      img{
-        width:100%;
+      cursor: pointer;
+      img {
+        width: 100%;
         height: auto;
         max-width: 150px;
       }
@@ -427,14 +461,15 @@ button.submit {
 
 <template>
   <div class="layout-editor">
-    <div v-if="status" class="status">{{ status }}</div>
-
     <form @submit.prevent="submit" novalidate enctype="multipart/form-data">
-      <button type="submit" class="submit">Save</button>
+      <div class="controls">
+        <div class="button-back" @click="back">Back</div>
+        <button type="submit" class="submit">Save - {{ status }}</button>
+      </div>
 
       <div class="form-row">
         <label>Id</label>
-        <input v-model="model.id" />
+        <input v-model="model.id" readonly />
       </div>
       <div class="form-row">
         <label>Name</label>
@@ -442,7 +477,6 @@ button.submit {
       </div>
       <div class="form-row">
         <label>Drill</label>
-        <!-- <input type="file" id="drill" ref="drill" /> -->
         <input v-on:click="openModalDrill" readonly v-model="model.drill" />
       </div>
       <div class="form-row">
@@ -507,7 +541,7 @@ button.submit {
                 +
               </button>
 
-              <div class="obj-subframe">
+              <div data-debug="ACTION-COLUMN" class="obj-subframe">
                 <button
                   type="button"
                   class="remove-subframe"
@@ -521,15 +555,18 @@ button.submit {
 
                 <div class="labels-group">
                   <div class="obj-x-label" v-if="model.frames[indF]?.[indSf]">
-                    <label>Type: {{ subframe.type }}</label>
+                    <label :data-value="subframe.type">Type</label>
                     <SelectType
                       v-model="model.frames[indF][indSf].type"
                       :initValue="model.frames[indF][indSf].type"
                     />
                   </div>
                   <div class="obj-x-label" v-if="model.frames[indF]?.[indSf]">
-                    <label class="obj-x-duration">
-                      Duration {{ subframe.duration }}:
+                    <label
+                      :data-value="subframe.duration"
+                      class="obj-x-duration"
+                    >
+                      Duration
                     </label>
                     <input v-model="model.frames[indF][indSf].duration" />
                   </div>
@@ -573,29 +610,42 @@ button.submit {
 
                     <div
                       class="obj-div"
+                      data-debug="ACTION-FRAME"
                       :data-frame-idx="indF"
                       :data-subframe-idx="indSf"
                       :data-div-idx="indD"
                     >
-                      <button
-                        type="button"
-                        class="remove-div"
-                        v-on:click="remove($event)"
-                        data-position="none"
-                        :data-frame-idx="indF"
-                        :data-subframe-idx="indSf"
-                        :data-div-idx="indD"
-                      >
-                        x
-                      </button>
+                      <div class="obj-div_header">
+                        <div
+                          class="miniature-action"
+                          v-if="model.frames[indF]?.[indSf]?.divs?.[indD]"
+                          v-bind:class="
+                            model.frames[indF][indSf].divs[indD].color
+                          "
+                        >
+                          <IconContentIcon v-bind:icon="div.icon" />
+                        </div>
 
-                      <label>Color: {{ div.color }}</label>
+                        <button
+                          type="button"
+                          class="remove-div"
+                          v-on:click="remove($event)"
+                          data-position="none"
+                          :data-frame-idx="indF"
+                          :data-subframe-idx="indSf"
+                          :data-div-idx="indD"
+                        >
+                          x
+                        </button>
+                      </div>
+
+                      <label :data-value="div.color">Color</label>
                       <SelectColor
                         v-if="model.frames[indF]?.[indSf]?.divs?.[indD]"
                         v-model="model.frames[indF][indSf].divs[indD].color"
                         :initValue="model.frames[indF][indSf].divs[indD].color"
                       />
-                      <label>Icon: {{ div.icon }}</label>
+                      <label :data-value="div.icon">Icon</label>
                       <SelectAction
                         v-if="model.frames[indF]?.[indSf]?.divs?.[indD]"
                         v-model="model.frames[indF][indSf].divs[indD].icon"
@@ -660,7 +710,6 @@ button.submit {
           <span>{{ img }}</span>
         </div>
       </div>
-      
     </div>
   </div>
 </template>

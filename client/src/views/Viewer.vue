@@ -1,13 +1,5 @@
 <script>
-import IconChangeDirection from "../components/action-icons/icon-change-direction.vue";
-import IconPass from "../components/action-icons/icon-pass.vue";
-import IconRun from "../components/action-icons/icon-run.vue";
-import IconShoot from "../components/action-icons/icon-shoot.vue";
-import IconStick from "../components/action-icons/icon-stick-handling.vue";
-import IconStop from "../components/action-icons/icon-stop-control.vue";
-import IconBack from "../components/action-icons/icon-back.vue";
-import IconAvoid from "../components/action-icons/icon-avoid.vue";
-import { toRaw } from "vue";
+import IconContentIcon from "../components/action-content-icon.vue";
 
 export default {
   name: "Viewer",
@@ -71,14 +63,7 @@ export default {
   },
   computed: {},
   components: {
-    IconPass,
-    IconRun,
-    IconShoot,
-    IconStick,
-    IconChangeDirection,
-    IconStop,
-    IconBack,
-    IconAvoid,
+    IconContentIcon
   },
 };
 </script>
@@ -249,48 +234,18 @@ export default {
           <template v-for="(frame, index) in currentFrame">
             <!-- start -->
             <template v-if="frame && frame.type === 'action'">
+
+
+
               <div
                 class="mini-action"
                 v-bind:key="`${div.color}_${index}`"
                 v-for="(div, index) in frame.divs"
                 :class="`${div.color} size-${frame.divs.length}`"
               >
-                <IconChangeDirection
-                  v-if="frame && div.icon === 'change'"
-                  w="100%"
-                  h="100%"
-                />
-                <IconShoot
-                  v-if="frame && div.icon === 'shot'"
-                  w="100%"
-                  h="100%"
-                />
-                <IconRun v-if="frame && div.icon === 'run'" w="100%" h="100%" />
-                <IconAvoid
-                  v-if="currentFrame && div.icon === 'avoid'"
-                  w="100%"
-                  h="100%"
-                />
-                <IconPass
-                  v-if="frame && div.icon === 'pass'"
-                  w="100%"
-                  h="100%"
-                />
-                <IconStick
-                  v-if="frame && div.icon === 'stick'"
-                  w="100%"
-                  h="100%"
-                />
-                <IconStop
-                  v-if="frame && div.icon === 'control'"
-                  w="100%"
-                  h="100%"
-                />
-                <IconBack
-                  v-if="frame && div.icon === 'back'"
-                  w="100%"
-                  h="100%"
-                />
+
+                <IconContentIcon v-bind:icon="div.icon" />
+        
               </div>
             </template>
 
