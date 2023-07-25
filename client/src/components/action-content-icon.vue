@@ -51,8 +51,8 @@ export default {
 
 <template>
 
-  <IconChangeDirection
-            v-if="frame && icon === 'change'"
+          <IconChangeDirection
+            v-if="icon === 'change'"
             w="100%"
             h="100%"
           />

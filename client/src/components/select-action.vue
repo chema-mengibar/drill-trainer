@@ -11,6 +11,7 @@ export default {
   },
   data: () => ({
     options: [
+      "",
       "shot",
       "avoid",
       "pass",
